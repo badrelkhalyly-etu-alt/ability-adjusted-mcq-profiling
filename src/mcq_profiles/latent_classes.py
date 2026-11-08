@@ -93,7 +93,9 @@ class MixIRT:
             logT = np.zeros(n)
         if cens is None:
             cens = np.zeros(n, dtype=bool)
-        return Yf, M.astype(float), np.asarray(logT, float), np.asarray(cens, bool), np.asarray(group, int)
+        logT = np.asarray(logT, float)
+        cens = np.asarray(cens, bool) & ~np.isnan(logT)
+        return Yf, M.astype(float), logT, cens, np.asarray(group, int)
 
     # --------------------------------------------------------------- params
     def n_params(self, J, G):
@@ -129,7 +131,7 @@ class MixIRT:
         self.sigma = np.ones(K) * (1.0 if K == 1 else 0.8)
         self.logpi = np.log(np.full((G, K), 1.0 / K))
         if self.duration:
-            obs = ~cens
+            obs = ~cens & ~np.isnan(logT)
             m, s = logT[obs].mean(), logT[obs].std() + 1e-3
             self.alpha = np.full(K, m) + (rng.normal(0, 0.1 * s, K) if K > 1 else 0)
             self.beta = np.zeros(K)
@@ -148,10 +150,12 @@ class MixIRT:
         mean = (self.alpha[None, :, None] + self.gamma[group][:, None, None]
                 + self.beta[None, :, None] * self.x[None, None, :])
         s = np.exp(self.logs)[None, :, None]
-        z = (logT[:, None, None] - mean) / s
+        miss = np.isnan(logT)
+        z = (np.nan_to_num(logT)[:, None, None] - mean) / s
         ll = -0.5 * z ** 2 - np.log(s) - 0.5 * LOG2PI
         if cens.any():
             ll[cens] = log_ndtr(-z[cens])
+        ll[miss] = 0.0  # duration unobserved: contributes nothing
         return ll, z
 
     def _joint(self, Yf, M, logT, cens, group):
@@ -294,6 +298,9 @@ class MixIRT:
             return al, be, ls, ga
 
         x = self.x
+        obs = ~np.isnan(logT)
+        post = post * obs[:, None, None]
+        logT = np.nan_to_num(logT)
 
         def f(v):
             al, be, ls, ga = unpack(v)
