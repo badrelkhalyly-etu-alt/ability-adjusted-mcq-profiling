@@ -97,7 +97,7 @@ def fig_items(form, cap, ck):
     o = np.argsort(b)
     ax[0].scatter(b, a, color=C1, s=25, edgecolor="white", linewidth=1)
     ax[0].set(xlabel="Difficulty b", ylabel="Discrimination a", title="(a) 2PL item parameters (train)")
-    R = pd.DataFrame(Y).corr(min_periods=100).to_numpy()
+    R = pd.DataFrame(Y).corr(min_periods=100).to_numpy(copy=True)
     np.fill_diagonal(R, np.nan)
     im = ax[1].imshow(R, cmap="Blues", vmin=0, vmax=np.nanmax(R))
     fig.colorbar(im, ax=ax[1], fraction=0.046, label="φ correlation")
@@ -169,7 +169,7 @@ def fig_posteriors(form, cap):
         return
     arr = np.load(a)
     score, pc, lz = arr[:, 0], arr[:, 1], arr[:, 2]
-    w = pd.read_csv(t)
+    w = pd.read_csv(t) if t.stat().st_size > 2 else pd.DataFrame()
     fig, ax = plt.subplots(1, 3, figsize=(10, 3.1))
     ax[0].hist(np.maximum(pc, 1 - pc), bins=25, color=C1)
     ax[0].set(xlabel="max posterior class probability", ylabel="Students", title="(a) Class assignment certainty (M1_2)")
@@ -301,7 +301,7 @@ def latex_tables(form):
     if p.exists():
         out["tab_e6"] = pd.read_csv(p).to_latex(index=False, float_format="%.2f", caption="Positive-control simulation: power and recovery.", label="tab:e6")
     for k, v in out.items():
-        (MAN / "tables" / f"{k}.tex").write_text(v)
+        (MAN / "tables" / (f"{k}.tex" if form != "demo" else f"demo_SYNTHETIC_{k}.tex")).write_text(v)
     return list(out)
 
 
@@ -349,6 +349,9 @@ def main():
     ap.add_argument("--demo", action="store_true")
     a = ap.parse_args()
     form = "demo" if a.demo else a.form
+    global FIG
+    if a.demo:  # synthetic outputs are kept apart from empirical figures
+        FIG = RES / "figures" / "demo_SYNTHETIC"
     FIG.mkdir(parents=True, exist_ok=True)
     (MAN / "tables").mkdir(parents=True, exist_ok=True)
     cap = {}

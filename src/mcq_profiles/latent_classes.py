@@ -511,3 +511,136 @@ class LCA:
 
     def bic(self, n):
         return -2 * self.loglik_ + self.n_params_ * np.log(n)
+
+
+class ContinuousIRT:
+    """Continuous competitors to latent classes (exploratory E3b):
+
+    * dims=2: compensatory two-dimensional 2PL, theta ~ N(0, I), first item loads on dim 1 only
+      (rotational identification). P = sigmoid(a1 th1 + a2 th2 + d).
+    * guessing=True (dims=1): 2PL with lower asymptote, P = c + (1-c) sigmoid(a(th - b)),
+      prior c ~ Beta(2, 8) (mean 0.2) and log a ~ N(0, 1).
+    EM with fixed product quadrature; per-item L-BFGS in the M-step.
+    The interface (fit / loglik / posterior / predict_items / result_) mirrors MixIRT.
+    """
+
+    def __init__(self, dims=1, guessing=False, n_nodes=None, max_iter=1500, tol=1e-8, verbose=False):
+        self.dims, self.guessing, self.max_iter, self.tol, self.verbose = dims, guessing, max_iter, tol, verbose
+        q = n_nodes or (41 if dims == 1 else 21)
+        g = np.linspace(-5 if dims == 1 else -4, 5 if dims == 1 else 4, q)
+        if dims == 1:
+            self.X = g[:, None]
+        else:
+            a, b = np.meshgrid(g, g, indexing="ij")
+            self.X = np.column_stack([a.ravel(), b.ravel()])
+        lw = -0.5 * (self.X ** 2).sum(1)
+        self.logw = lw - logsumexp(lw)
+        self.K = 1
+        self.duration = False
+
+    def _p(self, A=None, d=None, c=None):
+        A = self.A if A is None else A
+        d = self.d if d is None else d
+        c = self.c if c is None else c
+        eta = self.X @ A.T + d[None, :]
+        p = expit(eta)
+        return c[None, :] + (1 - c[None, :]) * p
+
+    def _estep(self, Yf, M):
+        p = np.clip(self._p(), 1e-12, 1 - 1e-12)
+        ll = Yf @ np.log(p).T + (M - Yf) @ np.log1p(-p).T + self.logw[None, :]
+        lli = logsumexp(ll, 1)
+        return np.exp(ll - lli[:, None]), lli
+
+    def _penalty(self):
+        pen = 0.5 * (self.A ** 2).sum() / 4.0
+        if self.guessing:
+            pen -= ((2 - 1) * np.log(self.c) + (8 - 1) * np.log1p(-self.c)).sum()
+        return pen
+
+    def fit(self, Y, logT=None, cens=None, group=None):
+        Y = np.asarray(Y, float)
+        M = (~np.isnan(Y)).astype(float)
+        Yf = np.nan_to_num(Y)
+        J, D = Y.shape[1], self.dims
+        pj = (Yf.sum(0) + .5) / (M.sum(0) + 1)
+        self.A = np.full((J, D), 1.0)
+        if D == 2:
+            self.A[:, 1] = 0.3
+            self.A[0, 1] = 0.0
+        self.d = np.log(pj / (1 - pj))
+        self.c = np.full(J, 0.15) if self.guessing else np.zeros(J)
+        hist, prev, conv = [], -np.inf, False
+        for it in range(self.max_iter):
+            post, lli = self._estep(Yf, M)
+            obj = lli.sum() - self._penalty()
+            hist.append(obj)
+            if abs(obj - prev) < self.tol * abs(obj):
+                conv = True
+                break
+            prev = obj
+            R = post.T @ Yf
+            Nn = post.T @ M
+            for j in range(J):
+                self._mstep_item(j, R[:, j], Nn[:, j])
+        self.result_ = FitResult(lli.sum(), obj, it, conv, self.n_params(J), hist)
+        self.start_logliks = [lli.sum()]
+        return self
+
+    def _mstep_item(self, j, r, n):
+        D, X = self.dims, self.X
+        fix2 = D == 2 and j == 0
+
+        def unpack(v):
+            a = v[:D].copy()
+            if fix2:
+                a[1] = 0.0
+            dd = v[D]
+            c = expit(v[D + 1]) if self.guessing else 0.0
+            return a, dd, c
+
+        def f(v):
+            a, dd, c = unpack(v)
+            s = expit(X @ a + dd)
+            p = np.clip(c + (1 - c) * s, 1e-12, 1 - 1e-12)
+            ll = (r * np.log(p) + (n - r) * np.log1p(-p)).sum() - 0.5 * (a ** 2).sum() / 4.0
+            if self.guessing:
+                ll += (2 - 1) * np.log(c) + (8 - 1) * np.log1p(-c)
+            # gradient
+            w = (r / p - (n - r) / (1 - p)) * (1 - c) * s * (1 - s)
+            ga = X.T @ w - a / 4.0
+            if fix2:
+                ga[1] = 0.0
+            g = [ga, [w.sum()]]
+            if self.guessing:
+                gc = ((r / p - (n - r) / (1 - p)) * (1 - s)).sum() * c * (1 - c) + (2 - 1) * (1 - c) - (8 - 1) * c
+                g.append([gc])
+            return -ll, -np.concatenate(g)
+
+        v0 = np.concatenate([self.A[j], [self.d[j]]] + ([[np.log(self.c[j] / (1 - self.c[j]))]] if self.guessing else []))
+        res = minimize(f, v0, jac=True, method="L-BFGS-B", options={"maxiter": 20})
+        if res.fun <= f(v0)[0]:
+            a, dd, c = unpack(res.x)
+            self.A[j], self.d[j] = a, dd
+            if self.guessing:
+                self.c[j] = c
+
+    def n_params(self, J):
+        return J * (self.dims + 1) - (1 if self.dims == 2 else 0) + (J if self.guessing else 0)
+
+    def loglik(self, Y, logT=None, cens=None, group=None, per_person=False):
+        Y = np.asarray(Y, float)
+        lli = self._estep(np.nan_to_num(Y), (~np.isnan(Y)).astype(float))[1]
+        return lli if per_person else lli.sum()
+
+    def posterior(self, Y, logT=None, cens=None, group=None):
+        Y = np.asarray(Y, float)
+        post, _ = self._estep(np.nan_to_num(Y), (~np.isnan(Y)).astype(float))
+        eap = post @ self.X[:, 0]
+        return np.ones((len(Y), 1)), eap, None, post
+
+    def predict_items(self, post):
+        return post @ self._p()
+
+    def bic(self, n):
+        return -2 * self.result_.loglik + self.result_.n_params * np.log(n)

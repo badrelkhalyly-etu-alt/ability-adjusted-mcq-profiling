@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import pickle
 import time
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -56,8 +57,12 @@ def _copula_null_silhouette(X, rho_s, seed, k=4):
 def stage_baseline(form, demo=False):
     df, meta = load_form(form, demo)
     X, ok = bl.features(df.final_score.to_numpy(float), df.total_duration_minutes.to_numpy(float))
+    n_missing_time = int((~ok).sum())
+    nonpos = ok & (X[:, 1] <= 0)
+    ok = ok & ~nonpos   # zero total time (all items not reached) is not a valid duration; reported, not silent
     Xo = X[ok]
-    out = dict(form=form, n_total=len(df), n_used=int(ok.sum()), n_excluded_no_time=int((~ok).sum()))
+    out = dict(form=form, n_total=len(df), n_used=int(ok.sum()), n_excluded_no_time=n_missing_time,
+               n_excluded_nonpositive_time=int(nonpos.sum()))
     out["pearson_r"], out["pearson_p"] = stats.pearsonr(Xo[:, 0], Xo[:, 1])
     out["spearman_r"] = stats.spearmanr(Xo[:, 0], Xo[:, 1])[0]
     # quadratic shape of time-score relation
@@ -290,6 +295,13 @@ def _e10_mask(seed, form, df, Y, logT, g, tr, te, models, lcas, demo):
     for nm in ["M0", "A2", "A3", "M1_2", "M1_3"]:
         post = models[nm].posterior(Yin, None, None, g[te])[3]
         preds[nm] = models[nm].predict_items(post)[:, mask]
+    cp = CKPT / f"{form}_competitors.pkl"
+    if cp.exists():  # exploratory continuous competitors (E3b)
+        for nm, m in pickle.load(open(cp, "rb")).items():
+            if nm == "C2PL":
+                continue
+            post = m.posterior(Yin)[3]
+            preds[nm] = m.predict_items(post)[:, mask]
     for nm, m in dur_models.items():
         post = m.posterior(Yin, speed_var[nm][te], None, g[te])[3]
         preds[nm if nm.endswith("_speed") else nm + "_time"] = m.predict_items(post)[:, mask]
@@ -338,6 +350,8 @@ def stage_e10(form, demo=False):
              ("M1_2", "A2"), ("M1_3", "A2"), ("M2_time", "M0"), ("M3_2_time", "M1_2"), ("M3_3_time", "M1_3"),
              ("M3_2_time", "M2_time"), ("M0", [k for k in models if k.startswith("LCA")][0]),
              ("M2_speed", "M0"), ("M2_speed", "M2_time"), ("M3_2_speed", "M2_speed")]
+    pairs += [(x, y) for x, y in [("MIRT2", "M0"), ("M1_3", "MIRT2"), ("M1_2", "MIRT2"), ("G3PL", "M0"), ("M1_2", "G3PL")]
+              if x in models and y in models]
     for a_, b_ in pairs:
         d = per[b_] - per[a_]   # >0 => a_ better
         mean, lo, hi = st.paired_bootstrap_ci(d, CFG["decision"]["bootstrap_ci"] if not demo else 200, seed=9001)
@@ -506,3 +520,76 @@ def stage_external(form, demo=False):
 def stage_replication(form, demo=False):
     for f in CFG["data"]["replications"]:
         stage_fit(f, demo)
+
+
+# ------------------------------------------------------------------ E3b (exploratory, logged deviation)
+def _mdim_rep(r, gen, Ytr, seed, demo):
+    """Multidimensional continuous null: data from the fitted 2D 2PL; does the class rule fire?"""
+    rng = np.random.default_rng(seed + r)
+    n, J = Ytr.shape
+    th = rng.standard_normal((n, 2))
+    P = expit(th @ gen.A.T + gen.d[None, :])
+    Y = (rng.random((n, J)) < P).astype(float)
+    Y[np.isnan(Ytr[rng.permutation(n)])] = np.nan
+    res = {}
+    for nm in ["M0", "A2", "M1_2", "M1_3"]:
+        sp = MODEL_SPECS[nm]
+        m = mk(sp["K"], sp.get("cs"), False, False, starts=3, demo=demo).fit(Y)
+        res[nm] = bic(m, n)
+    from mcq_profiles.latent_classes import ContinuousIRT
+    m2 = ContinuousIRT(2, max_iter=600 if not demo else 100).fit(Y)
+    res["MIRT2"] = m2.bic(n)
+    res["dBIC_M1_vs_1Dcont"] = min(res["M0"], res["A2"]) - min(res["M1_2"], res["M1_3"])
+    res["dBIC_M1_vs_MIRT2"] = res["MIRT2"] - min(res["M1_2"], res["M1_3"])
+    res["rep"] = r
+    return res
+
+
+def stage_e3b(form, demo=False):
+    from mcq_profiles.latent_classes import ContinuousIRT
+    from mcq_profiles.irt import expected_probs
+    ck = load_ckpt(form)
+    df, _ = load_form(form, demo)
+    Y, logT, cens, g, _ = arrays(df)
+    tr = ck["tr"]
+    Ytr = Y[tr]
+    n = tr.sum()
+    comps = {}
+    for nm, kw in [("MIRT2", dict(dims=2)), ("G3PL", dict(dims=1, guessing=True)), ("C2PL", dict(dims=1))]:
+        t0 = time.time()
+        comps[nm] = ContinuousIRT(**kw, max_iter=1500 if not demo else 100).fit(Ytr)
+        log(f"E3b {nm}: ll={comps[nm].result_.loglik:.2f} k={comps[nm].result_.n_params} conv={comps[nm].result_.converged} {time.time()-t0:.0f}s")
+    with open(CKPT / f"{form}_competitors.pkl", "wb") as f:
+        pickle.dump(comps, f)
+    B = {k: bic(m, n) for k, m in ck["models"].items() if not m.duration}
+    B.update({k: m.bic(n) for k, m in comps.items()})
+    # local dependence under M0
+    m0 = ck["models"]["M0"]
+    eap = m0.posterior(Ytr)[1]
+    Q = st.yen_q3(Ytr, expected_probs(m0, eap))
+    Qc = Q - np.nanmean(Q)
+    meta = __import__("json").loads((Path("data/processed") / f"{form}.json").read_text()) if not demo else {"items": list(range(Ytr.shape[1]))}
+    iu = np.triu_indices_from(Q, 1)
+    ld = [dict(i=str(meta["items"][i]), j=str(meta["items"][j]), q3=float(Q[i, j]), q3c=float(Qc[i, j]))
+          for i, j in zip(*iu) if abs(Qc[i, j]) > 0.2]
+    # how the M1_2 class contrast relates to item properties
+    m1 = ck["models"]["M1_2"]
+    dev = m1.b[1] - m1.b[0]
+    rel = dict(corr_dev_b=float(np.corrcoef(dev, m0.b[0])[0, 1]), corr_dev_a=float(np.corrcoef(dev, m0.a[0])[0, 1]),
+               corr_dev_mirt_a2=float(np.corrcoef(dev, comps["MIRT2"].A[:, 1])[0, 1]),
+               corr_dev_c=float(np.corrcoef(dev, comps["G3PL"].c)[0, 1]))
+    # multidimensional null
+    R = 20 if not demo else 2
+    out = Parallel(n_jobs=N_JOBS)(delayed(_mdim_rep)(r, comps["MIRT2"], Ytr, 5001, demo) for r in range(R))
+    tab = pd.DataFrame(out)
+    tab.to_csv(RES / "tables" / f"{form}_E3b_mdim_null.csv", index=False)
+    k = int((tab.dBIC_M1_vs_1Dcont > 0).sum())
+    res = dict(bic_train=B, local_dependence_pairs=ld, class_contrast_vs_item_properties=rel,
+               mirt2_loadings=comps["MIRT2"].A, g3pl_c=comps["G3PL"].c,
+               mdim_null=dict(R=R, fp_M1_over_1D=k / R, fp_ci=st.clopper_pearson(k, R),
+                              dBIC_M1_vs_1Dcont_median=float(tab.dBIC_M1_vs_1Dcont.median()),
+                              dBIC_M1_vs_1Dcont_q95=float(tab.dBIC_M1_vs_1Dcont.quantile(.95)),
+                              dBIC_M1_vs_MIRT2_median=float(tab.dBIC_M1_vs_MIRT2.median())))
+    save_json(res, f"{form}_E3b_competitors.json")
+    log("E3b BIC", {k: round(v) for k, v in sorted(B.items(), key=lambda x: x[1])})
+    log("E3b", rel, res["mdim_null"], "LD pairs", ld)

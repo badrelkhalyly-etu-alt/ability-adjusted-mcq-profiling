@@ -77,7 +77,7 @@ def lz_person_fit(Y, P):
 def yen_q3(Y, P):
     R = Y - P
     df = pd.DataFrame(R)
-    Q = df.corr(min_periods=50).to_numpy()
+    Q = df.corr(min_periods=50).to_numpy(copy=True)
     np.fill_diagonal(Q, np.nan)
     return Q
 

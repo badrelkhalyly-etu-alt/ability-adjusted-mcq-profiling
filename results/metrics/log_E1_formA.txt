@@ -1,0 +1,4 @@
+C:\Users\badre\AppData\Roaming\Python\Python314\site-packages\sklearn\cluster\_hdbscan\hdbscan.py:722: FutureWarning: The default value of `copy` will change from False to True in 1.10. Explicitly set a value for `copy` to silence this warning.
+  warn(
+17:19:52 E1 {'n_used': 5591, 'pearson_r': np.float64(0.28576053190306744), 'spearman_r': np.float64(0.326128460330298), 'k4': {'silhouette': 0.35334019939695255, 'davies_bouldin': 0.9278784803637001, 'calinski_harabasz': 4447.838592041964}, 'hopkins': 0.9923841216908622, 'cramers_v_oecd': 0.17524475205019416}
+17:19:52 E1 null silhouette {'mean': np.float64(0.36280765441107266), 'q95': np.float64(0.37113261907847533), 'p_value': 0.9405940594059405}
