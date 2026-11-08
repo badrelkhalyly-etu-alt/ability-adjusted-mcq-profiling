@@ -1,0 +1,205 @@
+{
+  "profile_x_M1_3": {
+    "stats": {
+      "chi2": 3409.218249109504,
+      "dof": 6,
+      "p": 0.0,
+      "cramers_v": 0.5521634535543091,
+      "n": 5591
+    },
+    "counts": {
+      "1": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 1453,
+        "P2: high score, medium time (15.7 pts, 31 min)": 60,
+        "P3: medium score, long time (9.1 pts, 42 min)": 685,
+        "P4: low score, short time (4.8 pts, 14 min)": 1058
+      },
+      "2": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 372,
+        "P2: high score, medium time (15.7 pts, 31 min)": 557,
+        "P3: medium score, long time (9.1 pts, 42 min)": 455,
+        "P4: low score, short time (4.8 pts, 14 min)": 72
+      },
+      "3": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 11,
+        "P2: high score, medium time (15.7 pts, 31 min)": 790,
+        "P3: medium score, long time (9.1 pts, 42 min)": 77,
+        "P4: low score, short time (4.8 pts, 14 min)": 1
+      }
+    }
+  },
+  "profile_x_M1_2": {
+    "stats": {
+      "chi2": 1826.9548350244074,
+      "dof": 3,
+      "p": 0.0,
+      "cramers_v": 0.5716354574643207,
+      "n": 5591
+    },
+    "counts": {
+      "1": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 793,
+        "P2: high score, medium time (15.7 pts, 31 min)": 0,
+        "P3: medium score, long time (9.1 pts, 42 min)": 243,
+        "P4: low score, short time (4.8 pts, 14 min)": 870
+      },
+      "2": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 1043,
+        "P2: high score, medium time (15.7 pts, 31 min)": 1407,
+        "P3: medium score, long time (9.1 pts, 42 min)": 974,
+        "P4: low score, short time (4.8 pts, 14 min)": 261
+      }
+    }
+  },
+  "M1_3_x_scoreband": {
+    "stats": {
+      "chi2": 4679.40954681974,
+      "dof": 6,
+      "p": 0.0,
+      "cramers_v": 0.6418098273426238,
+      "n": 5680
+    },
+    "counts": {
+      "Q1 (lowest)": {
+        "1": 1543,
+        "2": 28,
+        "3": 0
+      },
+      "Q2": {
+        "1": 1212,
+        "2": 210,
+        "3": 2
+      },
+      "Q3": {
+        "1": 539,
+        "2": 713,
+        "3": 46
+      },
+      "Q4 (highest)": {
+        "1": 37,
+        "2": 512,
+        "3": 838
+      }
+    }
+  },
+  "profile_x_oecd": {
+    "stats": {
+      "chi2": 171.70365297026038,
+      "dof": 3,
+      "p": 5.455856223933724e-37,
+      "cramers_v": 0.17524475205019416,
+      "n": 5591
+    },
+    "counts": {
+      "OECD": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 707,
+        "P2: high score, medium time (15.7 pts, 31 min)": 826,
+        "P3: medium score, long time (9.1 pts, 42 min)": 461,
+        "P4: low score, short time (4.8 pts, 14 min)": 453
+      },
+      "non-OECD": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 1129,
+        "P2: high score, medium time (15.7 pts, 31 min)": 581,
+        "P3: medium score, long time (9.1 pts, 42 min)": 756,
+        "P4: low score, short time (4.8 pts, 14 min)": 678
+      }
+    }
+  },
+  "profile_x_booklet": {
+    "stats": {
+      "chi2": 89.1407987336054,
+      "dof": 15,
+      "p": 1.43421908552982e-12,
+      "cramers_v": 0.0729008995244225,
+      "n": 5591
+    },
+    "counts": {
+      "1": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 680,
+        "P2: high score, medium time (15.7 pts, 31 min)": 552,
+        "P3: medium score, long time (9.1 pts, 42 min)": 412,
+        "P4: low score, short time (4.8 pts, 14 min)": 499
+      },
+      "11": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 106,
+        "P2: high score, medium time (15.7 pts, 31 min)": 79,
+        "P3: medium score, long time (9.1 pts, 42 min)": 84,
+        "P4: low score, short time (4.8 pts, 14 min)": 59
+      },
+      "12": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 119,
+        "P2: high score, medium time (15.7 pts, 31 min)": 89,
+        "P3: medium score, long time (9.1 pts, 42 min)": 54,
+        "P4: low score, short time (4.8 pts, 14 min)": 93
+      },
+      "2": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 687,
+        "P2: high score, medium time (15.7 pts, 31 min)": 495,
+        "P3: medium score, long time (9.1 pts, 42 min)": 503,
+        "P4: low score, short time (4.8 pts, 14 min)": 311
+      },
+      "7": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 130,
+        "P2: high score, medium time (15.7 pts, 31 min)": 109,
+        "P3: medium score, long time (9.1 pts, 42 min)": 72,
+        "P4: low score, short time (4.8 pts, 14 min)": 114
+      },
+      "8": {
+        "P1: medium score, medium time (6.7 pts, 28 min)": 114,
+        "P2: high score, medium time (15.7 pts, 31 min)": 83,
+        "P3: medium score, long time (9.1 pts, 42 min)": 92,
+        "P4: low score, short time (4.8 pts, 14 min)": 55
+      }
+    }
+  },
+  "M1_3_x_oecd": {
+    "stats": {
+      "chi2": 219.9047996907151,
+      "dof": 2,
+      "p": 1.7712484170946136e-48,
+      "cramers_v": 0.19676288712144202,
+      "n": 5680
+    },
+    "counts": {
+      "OECD": {
+        "1": 1180,
+        "2": 831,
+        "3": 461
+      },
+      "non-OECD": {
+        "1": 2151,
+        "2": 632,
+        "3": 425
+      }
+    }
+  },
+  "M1_3_class_profile": [
+    {
+      "cls": 1,
+      "n": 3331,
+      "eap": -0.6038653322025392,
+      "score": 5.934253977784449,
+      "minutes": 26.626983333333328
+    },
+    {
+      "cls": 2,
+      "n": 1463,
+      "eap": 0.5368853412023095,
+      "score": 11.247436773752563,
+      "minutes": 32.531933333333335
+    },
+    {
+      "cls": 3,
+      "n": 886,
+      "eap": 1.3965709717209396,
+      "score": 16.887133182844245,
+      "minutes": 31.449558333333336
+    }
+  ],
+  "profile_names": {
+    "0": "P1: medium score, medium time (6.7 pts, 28 min)",
+    "1": "P2: high score, medium time (15.7 pts, 31 min)",
+    "2": "P3: medium score, long time (9.1 pts, 42 min)",
+    "3": "P4: low score, short time (4.8 pts, 14 min)"
+  }
+}

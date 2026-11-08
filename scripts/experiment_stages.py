@@ -656,3 +656,71 @@ def stage_e3c(form, demo=False):
                M1_beats_G3PL=kg / R, dBIC_M1_vs_G3PL_median=float(tab.dBIC_M1_vs_G3PL.median()))
     save_json(res, f"{form}_E3c_guess_null.json")
     log("E3c", res)
+
+
+# ------------------------------------------------------------------ contingency tables (descriptive)
+def _profile_names(df, km):
+    """Name K-means profiles by centroid position relative to sample tertiles of score and time."""
+    ok = km >= 0
+    sq = np.quantile(df.final_score[ok], [1 / 3, 2 / 3])
+    tq = np.quantile(df.total_duration_minutes[ok], [1 / 3, 2 / 3])
+    lvl = lambda v, q, w: w[int(np.searchsorted(q, v))]
+    names = {}
+    for k in sorted(set(km[ok])):
+        s = df.final_score[km == k].mean()
+        t = df.total_duration_minutes[km == k].mean()
+        names[k] = (f"P{k + 1}: {lvl(s, sq, ['low', 'medium', 'high'])} score, "
+                    f"{lvl(t, tq, ['short', 'medium', 'long'])} time ({s:.1f} pts, {t:.0f} min)")
+    return names
+
+
+def _ctab(a, b, la, lb):
+    t = pd.crosstab(pd.Series(a, name=la), pd.Series(b, name=lb))
+    chi2, p, dof, _ = stats.chi2_contingency(t)
+    return t, dict(chi2=float(chi2), dof=int(dof), p=float(p), cramers_v=float(st.cramers_v(a, b)), n=int(t.to_numpy().sum()))
+
+
+def stage_contingency(form, demo=False):
+    ck = load_ckpt(form)
+    df, _ = load_form(form, demo)
+    Y, logT, cens, g, _ = arrays(df)
+    km = np.load(CKPT / f"{form}_kmeans_labels.npy")
+    names = _profile_names(df, km)
+    M = ck["models"]
+    cls2 = M["M1_2"].posterior(Y, None, None, g)[0].argmax(1) + 1
+    cls3 = M["M1_3"].posterior(Y, None, None, g)[0].argmax(1) + 1
+    ok = km >= 0
+    prof = np.array([names.get(k, "") for k in km])
+    band = pd.qcut(df.final_score, 4, labels=["Q1 (lowest)", "Q2", "Q3", "Q4 (highest)"], duplicates="drop").astype(str).to_numpy()
+    oecd = np.where(df.OECD.to_numpy() == 1, "OECD", "non-OECD")
+    book = df.BOOKID.astype(int).astype(str).to_numpy()
+    pairs = {
+        "profile_x_M1_3": (prof[ok], cls3[ok], "K-means profile", "M1_3 class"),
+        "profile_x_M1_2": (prof[ok], cls2[ok], "K-means profile", "M1_2 class"),
+        "M1_3_x_scoreband": (cls3, band, "M1_3 class", "score quartile"),
+        "profile_x_oecd": (prof[ok], oecd[ok], "K-means profile", "OECD"),
+        "profile_x_booklet": (prof[ok], book[ok], "K-means profile", "booklet"),
+        "M1_3_x_oecd": (cls3, oecd, "M1_3 class", "OECD"),
+    }
+    out, tex = {}, []
+    for key, (a, b, la, lb) in pairs.items():
+        t, s = _ctab(a, b, la, lb)
+        t.to_csv(RES / "tables" / f"{form}_ct_{key}.csv")
+        (t.div(t.sum(1), axis=0) * 100).round(1).to_csv(RES / "tables" / f"{form}_ct_{key}_rowpct.csv")
+        out[key] = dict(stats=s, counts=t.to_dict())
+        cells = t.astype(int).astype(str) + " (" + (t.div(t.sum(1), axis=0) * 100).round(1).astype(str) + r"\%)"
+        cells.columns = [str(c) for c in cells.columns]
+        cap = (rf"{la} $\times$ {lb}, Form~A; counts (row \%). $\chi^2({s['dof']})={s['chi2']:.1f}$, "
+               rf"Cram\'er's $V={s['cramers_v']:.2f}$, $n={s['n']}$.")
+        tex.append(cells.to_latex(caption=cap.replace("_", r"\_"), label="tab:ct_" + key.replace("_", ""), escape=False)
+                   .replace("M1_", r"M1\_"))
+        log("contingency", key, s)
+    # descriptive mean ability / time per M1_3 class
+    eap = M["M0"].posterior(Y, None, None, g)[1]
+    desc = pd.DataFrame(dict(cls=cls3, eap=eap, score=df.final_score, minutes=df.total_duration_minutes)).groupby("cls").agg(
+        n=("eap", "size"), eap=("eap", "mean"), score=("score", "mean"), minutes=("minutes", "median"))
+    desc.to_csv(RES / "tables" / f"{form}_M1_3_class_profile.csv")
+    out["M1_3_class_profile"] = desc.reset_index().to_dict(orient="records")
+    out["profile_names"] = {int(k): v for k, v in names.items()}
+    save_json(out, f"{form}_contingency.json")
+    (RES.parent / "manuscript" / "tables" / f"{form}_contingency.tex").write_text("\n\n".join(tex), encoding="utf-8")
