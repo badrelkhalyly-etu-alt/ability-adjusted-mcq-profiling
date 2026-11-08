@@ -11,7 +11,8 @@
 | **Primary (confirmatory)** | PISA 2025, mathematics linear path, most frequent fixed form (**Form A**) | 5,680 students, 82 countries | 22 (5 polytomous items dichotomised to full credit) | item-level, total = sum |
 | Replication 1 | Form B (2nd most frequent) | 5,375 | 25 | item-level |
 | Replication 2 | Form C (3rd most frequent) | 4,798 | 27 | item-level |
-| External validators (never used in fitting) | STU questionnaire: EFFORT1 (self-reported effort on the test, 1–10), PERSEV, ESCS, gender, grade | — | — | — |
+| External validators (never used in fitting) | STU questionnaire: EFFORT1 (self-reported effort on the test, 1–10), PERSEV, ESCS, gender, grade | 2026-11-08 | Added **exploratory** E4b: item-level speed (van der Linden τ̂ from unmasked item log-times, λ_j from train) as the duration variable in M2/M3_2, compared with total time in E10. Labelled exploratory; not part of the H2 decision. | The literature audit (novelty_gap_matrix §5, RQ2) flagged the total-time vs item-time ablation as the unexplored gap. Added before any test-set evaluation. |
+| 2026-11-08 | Simulation fits (E5, E6) use 3 random starts instead of 5. | Compute budget; real-data fits keep 5. |
 
 Why the linear math path: (i) every student on a form saw the same items, as in the source MCQ exam; (ii) in the 2025 PUF, item timing is withheld for the new science items (CACERS*); (iii) adaptive paths make item exposure depend on earlier performance, which confounds pattern-based classes.
 
@@ -144,4 +145,5 @@ Psychological or affective labels (anxious, bored, disengaged) for classes. EFFO
 
 | Date | Deviation | Reason |
 |---|---|---|
-| — | — | — |
+| 2026-11-08 | Added **exploratory** E4b: item-level speed (van der Linden τ̂ from unmasked item log-times, λ_j from train) as the duration variable in M2/M3_2, compared with total time in E10. Labelled exploratory; not part of the H2 decision. | The literature audit (novelty_gap_matrix §5, RQ2) flagged the total-time vs item-time ablation as the unexplored gap. Added before any test-set evaluation. |
+| 2026-11-08 | Simulation fits (E5, E6) use 3 random starts instead of 5. | Compute budget; real-data fits keep 5. |

@@ -260,6 +260,20 @@ def _e10_mask(seed, form, df, Y, logT, g, tr, te, models, lcas, demo):
         m = mk(sp["K"], sp.get("cs"), True, sp.get("group_effects", False), demo=demo)
         m.fit(Ytr, logTu[tr], None, g[tr])
         dur_models[nm] = m
+    # Exploratory ablation (deviation log, 2026-11-08): item-level speed instead of total time.
+    # van der Linden log-normal: log t_ij = lambda_j - tau_i + e; lambda_j from train students,
+    # tau_hat_i = mean over the student's unmasked, timed items of (lambda_j - log t_ij).
+    LT = np.log(np.where(RT > 0, RT, np.nan))
+    LT[:, mask] = np.nan
+    lam = np.nanmean(LT[tr], 0)
+    tau = np.nanmean(lam[None, :] - LT, 1)
+    tau[np.isnan(LT).all(1)] = np.nan
+    for nm in ["M2", "M3_2"]:
+        sp = MODEL_SPECS[nm]
+        m = mk(sp["K"], sp.get("cs"), True, sp.get("group_effects", False), demo=demo)
+        m.fit(Ytr, -tau[tr], None, g[tr])   # -tau so that larger = slower, same orientation as log T
+        dur_models[nm + "_speed"] = m
+    speed_var = {k: (-tau if k.endswith("_speed") else logTu) for k in dur_models}
     Yte = Y[te]
     target = Yte[:, mask]
     preds = {}
@@ -277,14 +291,15 @@ def _e10_mask(seed, form, df, Y, logT, g, tr, te, models, lcas, demo):
         post = models[nm].posterior(Yin, None, None, g[te])[3]
         preds[nm] = models[nm].predict_items(post)[:, mask]
     for nm, m in dur_models.items():
-        post = m.posterior(Yin, logTu[te], None, g[te])[3]
-        preds[nm + "_time"] = m.predict_items(post)[:, mask]
+        post = m.posterior(Yin, speed_var[nm][te], None, g[te])[3]
+        preds[nm if nm.endswith("_speed") else nm + "_time"] = m.predict_items(post)[:, mask]
     rows = {}
     for k, P in preds.items():
         ll, nobs = logloss_matrix(target, P)
         br, _ = brier_matrix(target, P)
         _, ece = calibration_table(target, P)
-        rows[k] = dict(ll=ll, br=br, nobs=nobs, ece=ece)
+        cal, _ = calibration_table(target, P)
+        rows[k] = dict(ll=ll, br=br, nobs=nobs, ece=ece, cal=cal)
     # duration density on test (unmasked time) : M2 conditional vs intercept-only
     from mcq_profiles.duration import lognormal_marginal_loglik
     m2 = dur_models["M2"]
@@ -321,7 +336,8 @@ def stage_e10(form, demo=False):
     cmp = []
     pairs = [("M0", "Marginal"), ("M0", "KMeans4_score_time"), ("M1_2", "M0"), ("M1_3", "M0"), ("A2", "M0"),
              ("M1_2", "A2"), ("M1_3", "A2"), ("M2_time", "M0"), ("M3_2_time", "M1_2"), ("M3_3_time", "M1_3"),
-             ("M3_2_time", "M2_time"), ("M0", [k for k in models if k.startswith("LCA")][0])]
+             ("M3_2_time", "M2_time"), ("M0", [k for k in models if k.startswith("LCA")][0]),
+             ("M2_speed", "M0"), ("M2_speed", "M2_time"), ("M3_2_speed", "M2_speed")]
     for a_, b_ in pairs:
         d = per[b_] - per[a_]   # >0 => a_ better
         mean, lo, hi = st.paired_bootstrap_ci(d, CFG["decision"]["bootstrap_ci"] if not demo else 200, seed=9001)
@@ -332,7 +348,8 @@ def stage_e10(form, demo=False):
     dens = pd.DataFrame([dict(seed=o[0], **o[3]) for o in out])
     dens.to_csv(RES / "tables" / f"{form}_E10_duration_density.csv", index=False)
     # calibration curve data for figure (first mask, key models)
-    save_json(dict(masks=[o[1] for o in out], n_test=int(ok.sum())), f"{form}_E10_meta.json")
+    save_json(dict(masks=[o[1] for o in out], n_test=int(ok.sum()),
+                   calibration={m: out[0][2][m]["cal"] for m in models}), f"{form}_E10_meta.json")
     log("E10\n" + summ.to_string() + "\n" + cmp.to_string() + "\n" + dens.to_string())
 
 
@@ -360,8 +377,12 @@ def stage_stability(form, demo=False):
     for lab, dev, mu, pi in out:
         aris.append(adjusted_rand_score(lab0, lab))
         cors.append(abs(np.corrcoef(dev0, dev)[0, 1]))
+    devs = []
+    for lab, dev, mu, pi in out:
+        devs.append(dev if np.corrcoef(dev0, dev)[0, 1] >= 0 else -dev)  # align label orientation
     res = dict(B=B, ari_median=np.median(aris), ari_q=np.quantile(aris, [.025, .975]), dev_corr_median=np.median(cors),
-               dev_corr_q=np.quantile(cors, [.025, .975]), aris=aris, cors=cors)
+               dev_corr_q=np.quantile(cors, [.025, .975]), aris=aris, cors=cors, dev_ref=dev0, devs=np.array(devs),
+               mu_ref=ref.mu, props_ref=pc.mean(0), b_ref=ref.b, a_ref=ref.a)
     # multiple initialisations on full train
     lls = ck["models"]["M1_2"].start_logliks
     res["start_logliks_M1_2"] = lls
