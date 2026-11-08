@@ -105,9 +105,10 @@ def logistic_dif(Y, group, n_strata=None):
     g = np.asarray(group, float)
     rows = []
     for j in range(Y.shape[1]):
-        ok = ~np.isnan(Y[:, j]) & ~np.isnan(g)
         others = np.delete(Y, j, 1)
-        rest = np.nanmean(others, 1)[ok] * others.shape[1]
+        rest_all = np.nanmean(others, 1) * others.shape[1]
+        ok = ~np.isnan(Y[:, j]) & ~np.isnan(g) & ~np.isnan(rest_all)
+        rest = rest_all[ok]
         y = Y[ok, j]
         gg = g[ok]
         rest = (rest - rest.mean()) / rest.std()

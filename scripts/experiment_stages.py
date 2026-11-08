@@ -350,7 +350,8 @@ def stage_e10(form, demo=False):
              ("M1_2", "A2"), ("M1_3", "A2"), ("M2_time", "M0"), ("M3_2_time", "M1_2"), ("M3_3_time", "M1_3"),
              ("M3_2_time", "M2_time"), ("M0", [k for k in models if k.startswith("LCA")][0]),
              ("M2_speed", "M0"), ("M2_speed", "M2_time"), ("M3_2_speed", "M2_speed")]
-    pairs += [(x, y) for x, y in [("MIRT2", "M0"), ("M1_3", "MIRT2"), ("M1_2", "MIRT2"), ("G3PL", "M0"), ("M1_2", "G3PL")]
+    pairs += [(x, y) for x, y in [("MIRT2", "M0"), ("M1_3", "MIRT2"), ("M1_2", "MIRT2"), ("G3PL", "M0"), ("M1_2", "G3PL"), ("M1_3", "G3PL"),
+                                   ("MIRT2G", "M0"), ("M1_3", "MIRT2G")]
               if x in models and y in models]
     for a_, b_ in pairs:
         d = per[b_] - per[a_]   # >0 => a_ better
@@ -494,12 +495,15 @@ def stage_external(form, demo=False):
     d["logtime"] = np.log(d.total_duration_minutes)
     d = d[(d.km >= 0) & d.EFFORT1.notna() & d.logtime.notna()].copy()
     d["km"] = d.km.astype("category")
+    # students without a school id form their own cluster (no silent drop)
+    d["school"] = pd.factorize(d.CNTSCHID.fillna("__nosch__" + d.CNTSTUID.astype(str)))[0]
+    d = d.dropna(subset=[c for c in ["eap", "final_score", "logtime", "pc2", "pc3_1", "pc3_2", "BOOKID"] if c in d]).copy()
     base = "EFFORT1 ~ eap + final_score + logtime + I(logtime**2) + C(BOOKID)"
     res = {}
     fits = {}
     for nm, f in [("base", base), ("kmeans", base + " + C(km)"), ("class2", base + " + pc2"),
                   ("class3", base + " + pc3_1 + pc3_2")]:
-        fits[nm] = smf.ols(f, d).fit(cov_type="cluster", cov_kwds={"groups": d.CNTSCHID})
+        fits[nm] = smf.ols(f, d).fit(cov_type="cluster", cov_kwds={"groups": d.school})
         res[nm] = dict(r2=fits[nm].rsquared, n=int(fits[nm].nobs))
     for nm in ["kmeans", "class2", "class3"]:
         extra = [p for p in fits[nm].params.index if p not in fits["base"].params.index]
@@ -593,3 +597,43 @@ def stage_e3b(form, demo=False):
     save_json(res, f"{form}_E3b_competitors.json")
     log("E3b BIC", {k: round(v) for k, v in sorted(B.items(), key=lambda x: x[1])})
     log("E3b", rel, res["mdim_null"], "LD pairs", ld)
+
+
+def _guess_rep(r, gen, Ytr, seed, demo):
+    """Guessing null: data from the fitted 2PL-with-asymptote (no classes)."""
+    from mcq_profiles.latent_classes import ContinuousIRT
+    rng = np.random.default_rng(seed + r)
+    n, J = Ytr.shape
+    th = rng.standard_normal(n)
+    P = gen.c[None, :] + (1 - gen.c[None, :]) * expit(th[:, None] * gen.A[:, 0][None, :] + gen.d[None, :])
+    Y = (rng.random((n, J)) < P).astype(float)
+    Y[np.isnan(Ytr[rng.permutation(n)])] = np.nan
+    res = {}
+    for nm in ["M0", "A2", "M1_2", "M1_3"]:
+        sp = MODEL_SPECS[nm]
+        res[nm] = bic(mk(sp["K"], sp.get("cs"), False, False, starts=3, demo=demo).fit(Y), n)
+    res["G3PL"] = ContinuousIRT(1, guessing=True, max_iter=600 if not demo else 100).fit(Y).bic(n)
+    res["dBIC_M1_vs_1Dcont"] = min(res["M0"], res["A2"]) - min(res["M1_2"], res["M1_3"])
+    res["dBIC_M1_vs_G3PL"] = res["G3PL"] - min(res["M1_2"], res["M1_3"])
+    res["rep"] = r
+    return res
+
+
+def stage_e3c(form, demo=False):
+    ck = load_ckpt(form)
+    df, _ = load_form(form, demo)
+    Y = arrays(df)[0]
+    Ytr = Y[ck["tr"]]
+    comps = pickle.load(open(CKPT / f"{form}_competitors.pkl", "rb"))
+    R = 20 if not demo else 2
+    out = Parallel(n_jobs=N_JOBS)(delayed(_guess_rep)(r, comps["G3PL"], Ytr, 6001, demo) for r in range(R))
+    tab = pd.DataFrame(out)
+    tab.to_csv(RES / "tables" / f"{form}_E3c_guess_null.csv", index=False)
+    k = int((tab.dBIC_M1_vs_1Dcont > 0).sum())
+    kg = int((tab.dBIC_M1_vs_G3PL > 0).sum())
+    res = dict(R=R, fp_M1_over_1D=k / R, fp_ci=st.clopper_pearson(k, R),
+               dBIC_M1_vs_1Dcont_median=float(tab.dBIC_M1_vs_1Dcont.median()),
+               dBIC_M1_vs_1Dcont_q95=float(tab.dBIC_M1_vs_1Dcont.quantile(.95)),
+               M1_beats_G3PL=kg / R, dBIC_M1_vs_G3PL_median=float(tab.dBIC_M1_vs_G3PL.median()))
+    save_json(res, f"{form}_E3c_guess_null.json")
+    log("E3c", res)

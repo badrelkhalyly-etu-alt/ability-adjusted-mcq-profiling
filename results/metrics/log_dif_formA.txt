@@ -1,0 +1,13 @@
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\statistics.py:109: RuntimeWarning: Mean of empty slice
+  rest_all = np.nanmean(others, 1) * others.shape[1]
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\statistics.py:109: RuntimeWarning: Mean of empty slice
+  rest_all = np.nanmean(others, 1) * others.shape[1]
+17:46:14 [oecd] M0: ll=-27644.07 k=44 it=9 conv=True starts=[-27644.1] 0s
+17:46:14 [oecd] A2: ll=-27625.90 k=47 it=763 conv=True starts=[-27625.9, -27625.9, -27625.9, -27625.9, -27625.9] 310s
+17:46:14 [oecd] M1_2: ll=-27456.31 k=68 it=136 conv=True starts=[-27456.4, -27456.4, -27456.4, -27456.3, -27456.4] 74s
+17:46:14 [oecd] M1_3: ll=-27331.28 k=92 it=386 conv=True starts=[-27347.8, -27371.4, -27375.4, -27331.3, -27371.5] 364s
+17:48:46 [non_oecd] M0: ll=-34098.41 k=44 it=10 conv=True starts=[-34098.4] 1s
+17:48:46 [non_oecd] A2: ll=-34003.14 k=47 it=60 conv=True starts=[-34003.2, -34003.1, -34003.2, -34003.2, -34003.2] 71s
+17:48:46 [non_oecd] M1_2: ll=-33779.29 k=68 it=252 conv=True starts=[-33779.3, -33779.3, -33796.8, -33779.3, -33779.3] 137s
+17:48:46 [non_oecd] M1_3: ll=-33664.25 k=92 it=174 conv=True starts=[-33664.2, -33658.6, -33664.2, -33658.8, -33658.8] 150s
+17:48:46 E9 {'oecd': {'n_flag_bh': 17, 'n_BC': 0, 'max_dR2': 0.02044864204772817}, 'gender': {'n_flag_bh': 8, 'n_BC': 0, 'max_dR2': 0.017171445068032087}, 'enum_oecd': {'n': 2472, 'bic': {'M0': np.float64(55631.90559834227), 'A2': np.float64(55619.00367200661), 'M1_2': np.float64(55443.88385896954), 'M1_3': np.float64(55381.32877958592)}, 'selected': 'M1_3'}, 'enum_non_oecd': {'n': 3208, 'bic': {'M0': np.float64(68552.04564393028), 'A2': np.float64(68385.73346761335), 'M1_2': np.float64(68107.57785170627), 'M1_3': np.float64(68071.2441737817)}, 'selected': 'M1_3'}}
