@@ -1,0 +1,3 @@
+22:05:19 E5 generator A2 {'M0': np.float64(87468.06805922411), 'A2': np.float64(87364.74797858062), 'A3': np.float64(87368.7699353891)}
+[Parallel(n_jobs=8)]: Using backend LokyBackend with 8 concurrent workers.
+[Parallel(n_jobs=8)]: Done   2 tasks      | elapsed: 38.3min

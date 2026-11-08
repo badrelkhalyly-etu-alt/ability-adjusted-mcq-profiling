@@ -110,6 +110,19 @@ def stage_baseline(form, demo=False):
     return out
 
 
+def _cached(path, fn, *args):
+    """Run fn(*args) once; persist the result so an interrupted stage can resume."""
+    if path.exists():
+        with open(path, "rb") as f:
+            return pickle.load(f)
+    out = fn(*args)
+    tmp = path.with_suffix(".tmp")
+    with open(tmp, "wb") as f:
+        pickle.dump(out, f)
+    tmp.replace(path)
+    return out
+
+
 # ------------------------------------------------------------------ E5
 def _null_rep(r, gen, Ytr, logTtr, gtr, cfg, seed, demo):
     rng = np.random.default_rng(seed + r)
@@ -173,7 +186,10 @@ def stage_null(form, demo=False):
     R = CFG["null_sim"]["R"] if not demo else 2
     log("E5 generator", best, bics)
     jobs = [(r, cfg) for cfg in CFG["null_sim"]["configs"] for r in range(R)]
-    out = Parallel(n_jobs=N_JOBS, verbose=5)(delayed(_null_rep)(r, gen, Y[tr], logT[tr], g[tr], cfg, 7001, demo) for r, cfg in jobs)
+    cdir = CKPT / f"{form}_E5_reps"
+    cdir.mkdir(exist_ok=True)
+    out = Parallel(n_jobs=N_JOBS, verbose=5)(delayed(_cached)(cdir / f"{cfg}_{r}.pkl", _null_rep, r, gen, Y[tr], logT[tr], g[tr], cfg, 7001, demo)
+                                             for r, cfg in jobs)
     tab = pd.DataFrame([{**{k: v for k, v in o.items() if not isinstance(v, dict)},
                          **{f"{m}_{k}": v for m in ["M0", "A2", "M1_2", "M1_3", "M2", "M3_2"] for k, v in o[m].items()}} for o in out])
     tab.to_csv(RES / "tables" / f"{form}_E5_null_reps.csv", index=False)
@@ -236,7 +252,10 @@ def stage_positive(form, demo=False):
     cells = [(m, p, n, False) for m in P["magnitude"] for p in P["proportion"] for n in P["n"]]
     cells += [(1.0, p, n, True) for p in P["proportion"] for n in P["n"]]
     jobs = [(c, r) for c in cells for r in range(R)]
-    out = Parallel(n_jobs=N_JOBS, verbose=5)(delayed(_pos_rep)(c, r, a, b, demo) for c, r in jobs)
+    cdir = CKPT / f"{form}_E6_reps"
+    cdir.mkdir(exist_ok=True)
+    out = Parallel(n_jobs=N_JOBS, verbose=5)(delayed(_cached)(cdir / ("_".join(map(str, c)) + f"_{r}.pkl"), _pos_rep, c, r, a, b, demo)
+                                             for c, r in jobs)
     tab = pd.DataFrame(out)
     tab.to_csv(RES / "tables" / f"{form}_E6_positive_reps.csv", index=False)
     g = tab.groupby(["mag", "prop", "n", "dur"])

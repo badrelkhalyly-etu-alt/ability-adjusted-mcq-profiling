@@ -7,6 +7,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_v, "1")
 import pickle
 import platform
 import sys
@@ -33,7 +36,7 @@ RES = ROOT / "results"
 CKPT = RES / "checkpoints"
 for d in [RES / "metrics", RES / "tables", RES / "figures", CKPT]:
     d.mkdir(parents=True, exist_ok=True)
-N_JOBS = 14
+N_JOBS = int(os.environ.get("AALBP_N_JOBS", 8))
 
 
 def log(*a):
