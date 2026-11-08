@@ -1,0 +1,39 @@
+# Frozen with reports/experimental_protocol.md on 2026-11-08
+data:
+  primary: math_formA
+  replications: [math_formB, math_formC]
+  not_reached: missing          # sensitivity: incorrect
+  polytomous: full              # sensitivity: any
+  censor_minutes: null          # sensitivity: 60
+split:
+  seed: 20261108
+  test_fraction: 0.30
+  stratify: CNT
+masking:
+  fraction: 0.30
+  seeds: [20261108, 20261109, 20261110, 20261111, 20261112]
+models:
+  n_nodes: 41
+  ridge: 1.0
+  n_starts: 5
+  max_iter: 1500
+  tol: 1.0e-8
+  K_mixture: [2, 3]
+  K_lca: [1, 2, 3, 4, 5, 6]
+  kmeans_k: [2, 3, 4, 5, 6, 7, 8]
+decision:
+  min_class_prop: 0.05
+  min_entropy: 0.60
+  null_quantile: 0.95
+  practical_logloss_gain: 0.001
+  bootstrap_ci: 2000
+null_sim:
+  R: 40
+  configs: [fitted, skewed]
+positive_sim:
+  R: 10
+  magnitude: [0.5, 1.0, 1.5]
+  proportion: [0.5, 0.2]
+  n: [2000, 5000]
+stability:
+  B: 20

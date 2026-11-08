@@ -1,0 +1,19 @@
+# Private / licensed data: never commit raw or processed student-level records
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.sav
+*.zip
+*.parquet
+# Credentials
+.env
+*.token
+*credentials*
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+results/checkpoints/
+*.egg-info/
