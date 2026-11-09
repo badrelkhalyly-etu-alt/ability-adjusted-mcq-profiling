@@ -186,7 +186,7 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       "            fmt='o', ms=3, color='#2a78d6', ecolor='#c8d9f2', elinewidth=0.8)\n"
       "ax.axhline(0, color='#52514e', ls='--', lw=1); ax.set(xlabel='Ability (logits)', ylabel='Relative time (SD)', title='SYNTHETIC demo')\n"
       "plt.show()\n"
-      "print('\n'.join(LIMITATIONS))",
+      "print(chr(10).join(LIMITATIONS))",
       "# 2. Real analysis (needs the PISA extracts; about 10-40 min per form)\n"
       "import subprocess, sys\n"
       "if not DEMO:\n"

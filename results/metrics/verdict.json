@@ -167,5 +167,38 @@
    ]
   },
   "source": "results/tables/continuous_map_summary.csv"
+ },
+ "extensions_confirmatory": {
+  "continuous_hypotheses": {
+   "B": {
+    "H6": true,
+    "H7": true,
+    "H8": true,
+    "H9": true
+   },
+   "C": {
+    "H6": true,
+    "H7": true,
+    "H8": true,
+    "H9": true
+   }
+  },
+  "temporal_decision": {
+   "v_relative": {
+    "null_q95_max": -9.155154525239029,
+    "criterion_i_bic": true,
+    "criterion_ii_heldout": false,
+    "criterion_iii_stable": true,
+    "decision": "indeterminate"
+   },
+   "log_total_time": {
+    "null_q95_max": -9.155154525239029,
+    "criterion_i_bic": true,
+    "criterion_ii_heldout": false,
+    "criterion_iii_stable": true,
+    "decision": "indeterminate"
+   }
+  },
+  "protocol": "reports/protocol_continuous_temporal.md (frozen at fe7dab6)"
  }
 }

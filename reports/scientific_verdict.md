@@ -46,6 +46,18 @@ The protocol could have detected substantial classes. The negative result is the
 - Cross-validated R² for self-reported effort: 0.017–0.029 with continuous ability and time, 0.008–0.013 with the profiles; the gain is significant on Form B only.
 - On held-out masked responses (E10), the profile predictor is 0.021 nats per item worse than the 2PL.
 
+## Extensions confirmed on independent data (protocol `reports/protocol_continuous_temporal.md`, frozen at `fe7dab6`; Form B and C test splits, evaluated once)
+| Hypothesis | Form B | Form C | Status |
+|---|---|---|---|
+| H6: continuous representation (CTR) beats the K-means profiles (masked-item log loss) | +0.025 [0.021, 0.029] | +0.019 [0.015, 0.022] | **Confirmed** |
+| H7: CTR beats discretisations of its own coordinates | K-means: +0.034; grid: +0.036 | K-means: +0.026; grid: +0.035 | **Confirmed** (all CIs exclude 0) |
+| H8: CTR interval coverage within ±0.02 of model-expected coverage | 0.969 vs 0.968 | 0.962 vs 0.967 | **Confirmed**; profile intervals are overconfident by 4–5 points |
+| H9: split-half reliability of ability > profile κ | 0.89 vs 0.52 | 0.87 vs 0.58 | **Confirmed** |
+| CTR vs M3_3 with time (two-sided) | −0.0004 [−0.0017, 0.0009] | +0.0002 [−0.0009, 0.0013] | Equivalent |
+| Latent time regimes (option C) | Wins on BIC in training; no held-out gain | Same pattern for relative time; small gain for total time | **Indeterminate** under the frozen rule |
+
+Details: `reports/temporal_regimes_report.md` and `results/metrics/extension_decisions.json`. The main verdict (C, about classes) is unchanged. The extensions add a positive, independently confirmed contribution: an uncertainty-aware continuous representation.
+
 ## Alternative publishable question (verdict C)
 The limits of behavioural profiling from minimal examination data. The paper shows, with a reusable pre-registered protocol, three things:
 1. Silhouette, bootstrap stability and LCA enumeration cannot distinguish score–time profiles from a continuum.

@@ -1,60 +1,60 @@
-# D10: Q1 readiness assessment
+# Submission-readiness report (critical), IEEE Access
 
-**Scientific verdict:** C, no evidence of residual latent classes (see `scientific_verdict.md`).
+**Scientific status.**
+- **Main study:** verdict C. Score–time profiles and ability-adjusted mixture classes are not distinct from continuous models.
+- **Extension B:** a continuous, uncertainty-aware representation, confirmed on independent data. All four frozen hypotheses held on both validation forms.
+- **Extension C:** latent time regimes. Indeterminate under the frozen rule, leaning towards a non-normal continuum.
 
-**Publication readiness: not yet submittable.** The science is complete and coherent as a methodological and negative-results paper. Authorship, data permissions and several robustness items must be settled first.
+**Readiness: close to submittable.** The science and the PDF are complete. Editorial items and a few judgement calls remain; they are listed below.
 
-## 1. Target journal: IEEE Access (authors' choice, 9 November 2026)
-The paper is publishable as **"why score–time profiles from minimal process data are not evidence of student types: a null-calibrated protocol"**. It is not publishable as a new profiling method.
+The submission file is `manuscript/access.tex` → `access.pdf`: 24 pages, official IEEE Access template, no undefined references, no overfull lines. The Overleaf bundle is `manuscript/access_overleaf.zip`. The single-column preprint is `article.tex` (36 pages).
 
-The submission version is `manuscript/access.tex` → `manuscript/access.pdf`: IEEE Access two-column class, 17 pages. The single-column preprint `article.tex` shares the same sections, tables and figures.
+## 1. Contributions and the evidence behind each
 
-| IEEE Access requirement | Status |
+| Contribution | Experiment and comparison | Data | Evidence |
+|---|---|---|---|
+| C1. Null-calibrated validation of profiles | Profile rules calibrated on data simulated from fitted continuous models (2PL, guessing, 2D, four non-normal time models); positive controls | Form A (main study); Form A development split (time) | K-means/LCA find 4 profiles without classes. Mixture-class rule: 0/80 false positives under a 2PL null, 20/20 under guessing or 2D nulls. Time-regime rule: 0–5 % false positives under non-normal continua, 100 % power |
+| C2. Information lost by discrete profiling | Masked-item log loss: CTR vs K-means profiles and vs two discretisations of CTR's own coordinates | Form B and C test splits, once | Profiles lose 0.019–0.025 nats per response; discretising CTR loses 0.026–0.036. Profiles keep about 70 % of ability variance and 28–30 % of relative-time variance |
+| C3. Uncertainty-aware continuous representation | Predictive-interval calibration; split-half stability; comparison with class models and MIRT2G; survey weights | Form B and C test splits, once | Calibrated (coverage − expected within 0.005); profile intervals overconfident by 4–5 points. Reliability 0.87–0.89 vs profile κ 0.52–0.58. Matches M3_3 with time, MIRT2G and M1_3 |
+| C4. Reproducible evaluation and visualisation framework | Code, 45 tests, notebooks 00–10, Streamlit prototype | — | Every table cell checked against its CSV (`check_tables.py`). The notebooks run in demonstration mode. 45/45 tests pass. An earlier intermittent failure of the prototype test was traced to two Python installations on the build machine |
+
+## 2. IEEE Access requirements
+
+| Requirement | Status |
 |---|---|
-| Single-paragraph abstract, ≤ 250 words, no citations or equations | Done (`sections/abstract_ieee.tex`, 248 words) |
-| Index terms (keywords) | Done (9 terms) |
-| IEEE numeric reference style | Done (`IEEEtranN`; author–year commands map to numbers) |
-| Template class | Done: official IEEE Access LaTeX template (Overleaf zip supplied by the authors, 9 November 2026), class files unmodified. `manuscript/access_overleaf.zip` (built by `scripts/make_overleaf_bundle.py`) imports directly into Overleaf |
-| Author names, affiliations, corresponding author, funding footnote | **Placeholders**: authorship not yet agreed |
-| Biography (and photograph) for every author | **Placeholder**: to be written by each author |
-| Article processing charge (open access) | Not verified here; check the current amount on the IEEE Access website |
-| Journal quartile / impact factor | **Not verified**. A secondary source reports a 2025 JIF of 4.2 and a CiteScore of 9.3, but not the quartile. Check JCR and Scopus before relying on a "Q1" claim; the category matters |
+| Abstract ≤ 250 words, one paragraph, no citations | Done (237 words) |
+| Index terms | Done |
+| Official template | Done: the zip supplied by the authors, class files unmodified. Caption wrapping fixed in our figure environment |
+| Authors | As supplied by the authors. Corresponding authors: B. El Khalyly and N. Safeh |
+| Affiliations | **To be confirmed** for B. El Khalyly (faculty or lab) and A. Yalid (inferred from the e-mail domain). **To be completed** for A. Belkhadim and Z. Ibn Batouta. None was invented |
+| Biographies and photographs | **Missing** (placeholders for 5 authors) |
+| Funding statement | **Missing** (placeholder) |
+| Data and code availability | Repository named; **URL to add** once the authors create the GitHub repository |
+| APC and journal quartile | **Not verified**. Check on the IEEE Access site and in JCR/Scopus before claiming "Q1" |
 
-**Fit and risk.** IEEE Access is a broad, multidisciplinary engineering journal with a binary accept/reject decision and fast review. It publishes educational data mining and learning analytics work. Main risks:
-1. Reviewers outside psychometrics may read a negative result as "nothing found". The introduction and abstract must lead with the engineering message: a profiling feature built into e-assessment platforms produces spurious types, and here is a protocol to test it.
-2. The mixture-IRT notation is dense for this readership. Keep the model ladder table and move derivations to the supplementary material if reviewers ask.
-3. Length: 17 two-column pages. Contingency tables and part of E8/E9 can move to supplementary material if needed.
-
-## 2. Strengths reviewers will credit
-- A frozen protocol (commit `e54a29f`) with an explicit deviation log, and a test set evaluated once.
-- Null simulations fitted to the operational data (80 replications), positive controls (160 replications) and held-out masked-item prediction with paired bootstrap CIs.
-- Replication on two independent forms with different students and items.
-- A negative result that is informative. The K-means pipeline and LCA "find" four profiles in data without classes, and discrete profiles predict worse than continuous ability.
-- Open code, unit tests, CI and Colab notebooks.
-
-## 3. Remaining publication risks, by severity
-
-### Blocking
-1. **Authorship.** The paper is now framed on PISA 2025 alone (authors' decision, 9 November 2026); N. Safeh's unpublished manuscript is cited once, as the origin of the question. Author list set on 9 November 2026: N. Safeh, B. El Khalyly, A. Yalid, A. Belkhadim, Z. Ibn Batouta; corresponding authors B. El Khalyly and N. Safeh. Affiliations of three authors, biographies and funding remain to be completed. `CITATION.cff` and the manuscript author block are placeholders.
-2. **Pre-registration status.** The protocol was frozen in a local git commit, not on a public registry (OSF/AsPredicted). Reviewers may discount the "pre-registered" label. Either describe it as an "internally frozen protocol with a timestamped commit" or publish the repository history.
-3. **Post-hoc competitors.** The decisive comparisons (G3PL, MIRT2, MIRT2G) were added after the Form A results were seen. Forms B and C mitigate this: when the competitors were added, their outcome on those forms was unknown. It must still be stated prominently, and ideally confirmed on a further form or cycle.
+## 3. Risks a reviewer will raise, by severity
 
 ### Major
-4. **Sampling design.** Done in part (Section "Sensitivity analyses"). A weighted pseudo-likelihood favours M1_3 with the nominal n but not with the Kish effective n (518–614), and the weighted classes change across forms. Reviewers may still ask for a design-based treatment of clustering, which has no standard for mixture IRT. The ESS rescaling is post hoc and must be presented as such.
-5. **Duration model.** Done: a cubic, heteroscedastic M2 explains roughly 70–75 % of the duration ΔBIC, but class duration models still lead by 497–958. The paper now says the remainder is unresolved (discrete classes or a non-normal continuous speed distribution). A reviewer may ask for the second model.
-6. **Model space.** No residual speed–accuracy model (Bolsinova et al.) and no item-position model was fitted. The class models allow only difficulty shifts.
-7. **Simulation scope.** The null and positive-control designs are tied to Form A (22 items, n ≈ 4,000). EPM reviewers will want factors such as test length, N and the RT–ability correlation.
-8. **Not-reached sensitivity.** Done: the conclusion is unchanged on all three forms.
+1. **Length and focus.** At 24 pages, the paper reports three studies: the negative result, representation B and time regimes C. Option: move E8, E9, the contingency tables and part of C to supplementary material.
+2. **Protocols frozen in local git commits, not on a public registry.** The text says "frozen before analysis". Publish the repository history (commits `e54a29f` and `fe7dab6`) with the paper.
+3. **Post-hoc competitors in the main study** (G3PL, MIRT2, MIRT2G). This is mitigated, because extensions B and C were confirmatory on untouched forms.
+4. **The value of time is small and not robust to survey weights**: CTR vs G3PL +0.0008–0.0013 unweighted, about 0 weighted. The paper states this. Do not oversell relative time as predictive. Its role is descriptive.
+5. **Survey design.** Weighted analyses use a pseudo-likelihood. Effective sample sizes are small with multi-country weights, and clustering is not modelled.
+
+### Moderate
+6. **Rule for time regimes.** The frozen BIC threshold is negative (−9.2), which weakens criterion (i). This is reported and does not change the decision. The nulls were calibrated at the development sample size.
+7. **H9 compares different metrics** (reliability vs κ). The like-for-like comparison, ability quartiles κ = 0.38, is reported and shows that cut points cause the instability.
+8. **Weighted M1_3 better than CTR on Form C** (−0.0034 [−0.0060, −0.0009]), not on Form B. It is reported as exploratory.
+9. **Scope.** Low-stakes PISA 2025 mathematics, 15-year-olds. There is no high-stakes examination, and item-level engagement states were not tested.
 
 ### Minor
-9. Starts per fit: 5 on real data and 3 in simulations. 8 of 480 null fits did not converge (flagged).
-10. BIC uses nominal parameter counts despite ridge-penalised deviations.
-11. The paired comparison M3_3_time vs MIRT2G was not pre-specified, so no CI is reported for it.
-12. **Literature.** The 2026 references come from Crossref/Scopus metadata. Some abstracts were not read (see `literature/scopus_verification.md`). Every citation must be re-checked before submission.
-13. **Scope.** Results concern PISA 2025 (low-stakes). Transfer to high-stakes examinations is untested; another PISA cycle or domain would be the cheapest external replication.
+10. Five starts on real data, three in simulations; 20 replications per null generator in C.
+11. BIC uses nominal parameter counts with ridge-penalised deviations.
+12. The 2026 references come from Crossref or Scopus metadata. Re-check each citation before submission.
 
-## 4. Path to submission (estimated work)
-1. Complete the author list. Decide the repository visibility.
-2. Done: weighted fit, non-linear duration competitor and not-reached sensitivity analysis (training data only). Optional: a non-normal continuous speed model for the duration remainder.
-3. Optionally extend the simulation factors for EPM.
-4. Re-verify the references, then prepare the cover letter around verdict C and its alternative question.
+## 4. Remaining steps before submission
+1. Authors: affiliations, biographies with photographs, funding, CRediT statement.
+2. Create the public GitHub repository, then run `python scripts/build_notebooks.py <URL>`, add the URL to the paper and rebuild the Overleaf zip.
+3. Decide what to move to supplementary material if a shorter paper is preferred.
+4. Re-verify the references and check the APC.
+5. Cover letter around C1–C4, stating the negative result plainly.

@@ -50,8 +50,15 @@ def test_limitations_forbid_labels_and_high_stakes_use():
 
 
 def test_streamlit_app_runs_with_demo_data():
-    import streamlit.testing.v1 as st_testing
-    at = st_testing.AppTest.from_file(str(APP), default_timeout=300).run()
-    assert not at.exception, at.exception
-    assert any("Ability reliability" in m.label for m in at.metric)
-    assert any("Limits of interpretation" in h.value for h in at.subheader)
+    """Headless run of the real app (streamlit.testing AppTest) in a fresh interpreter (same executable as pytest)."""
+    import subprocess
+    import sys
+    code = "; ".join([
+        "from streamlit.testing.v1 import AppTest",
+        f"at = AppTest.from_file({str(APP)!r}, default_timeout=300).run()",
+        "assert not at.exception, at.exception",
+        "assert any('Ability reliability' in m.label for m in at.metric)",
+        "assert any('Limits of interpretation' in h.value for h in at.subheader)",
+        "print('APP_OK')"])
+    r = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=600)
+    assert r.returncode == 0 and "APP_OK" in r.stdout, r.stderr[-3000:]

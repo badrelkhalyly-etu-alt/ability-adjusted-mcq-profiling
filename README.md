@@ -10,6 +10,12 @@ Using PISA 2025, it asks whether the profiles found by K-means on (score, total 
 
 > **Data scope.** All empirical results here come from the **PISA 2025 public-use files** (linear-path mathematics forms). Any output named `demo_*` comes from synthetic data and is a software test only.
 
+## Extensions (second frozen protocol, confirmed on untouched Form B and C test splits)
+- **Continuous, uncertainty-aware representation (CTR).** Each student gets an IRT ability with guessing and a relative time adjusted for ability, booklet, the items reached and their time intensities, both with intervals. Code: `src/mcq_profiles/continuous_map.py`; evaluation: `scripts/run_continuous_eval.py`; notebook 09.
+- **Latent time regimes versus flexible continuous time distributions.** Six continuous families (spline/GAM-type, skew-normal, Student t, sinh-arcsinh) are compared with regime models, under the same response model. Code: `src/mcq_profiles/temporal.py`; analysis: `scripts/run_temporal.py`; notebook 10; report: `reports/temporal_regimes_report.md`.
+- **Prototype dashboard.** `streamlit run app/streamlit_app.py`; see `app/README.md`. It runs on synthetic demonstration data or on a local file, and shows no labels.
+- Protocol: `reports/protocol_continuous_temporal.md`. Critical audit: `reports/critical_audit.md`. Submission readiness: `reports/q1_readiness.md`.
+
 ## What is (and is not) claimed
 - **No new algorithm.** The models are existing mixture-IRT and log-normal duration models. They are organised as a ladder (M0, A_K, M1_K, M2, M3_K, M4_K) and calibrated against simulations from a continuous model fitted to the same assessment.
 - **Hypotheses were registered first.** H1–H5 and the decision rules were frozen before any model was fitted to item responses. See `reports/experimental_protocol.md`, commit `e54a29f`. Later deviations are logged in the same file.
