@@ -164,3 +164,4 @@ Psychological or affective labels (anxious, bored, disengaged) for classes. EFFO
   3. Continuous duration competitor: M2 with a cubic mean in θ and log residual SD linear in θ, plus the same duration model inside M3_2 and M3_3 (`MixIRTDurPoly`).
   Reason: the robustness items listed in `reports/q1_readiness.md` (sampling design, linear duration null, not-reached scoring).
 - **Submission format.** An IEEE Access version (`manuscript/access.tex`) shares the sections, tables and figures of `article.tex`; only the abstract was rewritten to the journal's rules.
+- **Framing (2026-11-09, authors' decision).** The paper is framed on PISA 2025 alone. Mentions of the FSBM examination were removed from the manuscript, README and notebooks; the unpublished manuscript that raised the question is cited once. No analysis changed. The frozen protocol text above is left unchanged.

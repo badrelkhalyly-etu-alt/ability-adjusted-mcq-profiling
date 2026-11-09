@@ -35,7 +35,7 @@ The submission version is `manuscript/access.tex` → `manuscript/access.pdf`: I
 ## 3. Remaining publication risks, by severity
 
 ### Blocking
-1. **Authorship and consent.** The extension builds on N. Safeh's unpublished manuscript. Before submission, co-authorship, ordering and her approval must be agreed. `CITATION.cff` and the manuscript author block are placeholders.
+1. **Authorship.** The paper is now framed on PISA 2025 alone (authors' decision, 9 November 2026); N. Safeh's unpublished manuscript is cited once, as the origin of the question. The author list must still be completed. `CITATION.cff` and the manuscript author block are placeholders.
 2. **Pre-registration status.** The protocol was frozen in a local git commit, not on a public registry (OSF/AsPredicted). Reviewers may discount the "pre-registered" label. Either describe it as an "internally frozen protocol with a timestamped commit" or publish the repository history.
 3. **Post-hoc competitors.** The decisive comparisons (G3PL, MIRT2, MIRT2G) were added after the Form A results were seen. Forms B and C mitigate this: when the competitors were added, their outcome on those forms was unknown. It must still be stated prominently, and ideally confirmed on a further form or cycle.
 
@@ -51,10 +51,10 @@ The submission version is `manuscript/access.tex` → `manuscript/access.pdf`: I
 10. BIC uses nominal parameter counts despite ridge-penalised deviations.
 11. The paired comparison M3_3_time vs MIRT2G was not pre-specified, so no CI is reported for it.
 12. **Literature.** The 2026 references come from Crossref/Scopus metadata. Some abstracts were not read (see `literature/scopus_verification.md`). Every citation must be re-checked before submission.
-13. **Link to the source study.** No FSBM data were analysed. Reviewers of a paper citing an unpublished manuscript may ask for it. Running the released pipeline on FSBM data, with permission, is the strongest possible addition.
+13. **Scope.** Results concern PISA 2025 (low-stakes). Transfer to high-stakes examinations is untested; another PISA cycle or domain would be the cheapest external replication.
 
 ## 4. Path to submission (estimated work)
-1. Settle authorship and consent with N. Safeh. Decide the repository visibility.
+1. Complete the author list. Decide the repository visibility.
 2. Done: weighted fit, non-linear duration competitor and not-reached sensitivity analysis (training data only). Optional: a non-normal continuous speed model for the duration remainder.
 3. Optionally extend the simulation factors for EPM.
 4. Re-verify the references, then prepare the cover letter around verdict C and its alternative question.

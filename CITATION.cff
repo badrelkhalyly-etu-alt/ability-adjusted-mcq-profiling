@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it. Authorship of the extension is to be agreed with the author of the source study before any public release."
+message: "If you use this software, please cite it."
 title: "ability-adjusted-mcq-profiling: null-calibrated mixture IRT for score-time behavioural profiles"
 version: 0.1.0
 date-released: 2026-11-08

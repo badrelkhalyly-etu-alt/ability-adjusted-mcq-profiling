@@ -63,8 +63,7 @@ DATA_NOTE = ("**Data.** Real mode needs the PISA 2025 public-use files processed
              "(licensed by the OECD and never committed). For Colab, upload `data/processed/math_form*.parquet/.json` and "
              "`student_external.parquet` to the same relative paths, or mount Google Drive. "
              "Demo mode generates synthetic data. **Demo outputs are not findings.** "
-             "The *saved results* cells display the PISA 2025 aggregate outputs committed in `results/`. "
-             "**No result concerns the FSBM students of the source study.**")
+             "The *saved results* cells display the PISA 2025 aggregate outputs committed in `results/`.")
 
 CT = ["profile_x_M1_3", "M1_3_x_scoreband", "profile_x_M1_2", "profile_x_oecd", "profile_x_booklet", "M1_3_x_oecd"]
 
@@ -84,7 +83,7 @@ print("score consistency:", np.allclose(df[items].sum(1, skipna=True), df.final_
 print(df.total_duration_minutes.describe(percentiles=[.01,.05,.5,.95,.99]))
 print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:", (df.total_duration_minutes > 60).sum())''',
       SHOW, "show_csv('data_descriptives.csv')  # Forms A, B, C"]),
-    ("02_baseline_clustering", "E1: Reproduction of the source pipeline (K-means on score and time)",
+    ("02_baseline_clustering", "E1: The score-time pipeline (K-means on score and time)",
      "K-means (k = 2..8), internal indices, 5-fold held-out silhouette, bootstrap ARI/Jaccard, log-time variant, GMM/BIC, "
      "agglomerative, DBSCAN/HDBSCAN, Hopkins statistic, and a no-cluster null distribution of the silhouette.",
      [RUN, "run('baseline')", SHOW,

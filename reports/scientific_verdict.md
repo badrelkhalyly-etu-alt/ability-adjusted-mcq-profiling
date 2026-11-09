@@ -1,6 +1,6 @@
 # Scientific verdict: **C, no evidence of residual latent classes**
 
-*Data: PISA 2025 public-use files, linear mathematics Forms A (confirmatory), B and C (replications). None of these results concern the 1,979 FSBM students of the source study.*
+*Data: PISA 2025 public-use files, linear mathematics Forms A (confirmatory), B and C (replications).*
 *Protocol frozen at commit `e54a29f`. Deviations are logged in `reports/experimental_protocol.md`. Machine-readable version: `results/metrics/verdict.json`.*
 
 ## Verdict scale (from the research brief)
@@ -22,8 +22,8 @@
 | H4 non-reducibility | Not reproduced by score, ability, booklet or region | Class × score quartile V = 0.64. 94.6 % of class 3 lies in the top quartile. Class × OECD V = 0.20 | **Not supported** |
 | H5 external value | Predicts EFFORT1 beyond ability, score and time | ΔR² = 0.002 (K-means), 0.001 (M1_2), 0.004 (M1_3) | Not supported (negligible) |
 
-## Source pipeline
-- K-means k = 4 reproduces the four profiles, with silhouette 0.353 (source: 0.355).
+## Score–time pipeline
+- K-means k = 4 gives four score–time profiles, with silhouette 0.353.
 - The no-cluster copula null has mean 0.363 (p = 0.94).
 - The 80 IRT null replications give a silhouette of 0.39 to 0.40, and LCA selects K = 4 in 80/80.
 - Used as a predictor of masked items, the profiles are 0.021 nats per item worse than a 2PL.
@@ -51,4 +51,4 @@ The limits of behavioural profiling from minimal examination data. The paper sho
 - The exploratory competitors (G3PL, MIRT2, MIRT2G) and the τ̂ ablation were added after the protocol was frozen and are logged as deviations.
 - Duration: a cubic, heteroscedastic continuous duration model explains roughly 70–75 % of the duration ΔBIC, but class duration models still lead by 497–958 BIC points on every form. Total time thus carries heterogeneity beyond a smooth speed–ability curve; whether it is discrete or a non-normal continuous speed distribution was not tested. Its held-out value is small (H2). This does not affect the verdict, which concerns ability-adjusted response classes.
 - Weights: the main fits ignore the sampling design. A weighted pseudo-likelihood favours M1_3 with the nominal n but not with the effective n, and its classes change from form to form. Weighted model selection for mixture IRT remains a limitation.
-- PISA is low-stakes and multi-format. The source examination is a graded university MCQ exam. The conclusions concern the method, not the FSBM students.
+- PISA is low-stakes and multi-format. The conclusions concern the method and the PISA 2025 population; transfer to high-stakes examinations is untested.

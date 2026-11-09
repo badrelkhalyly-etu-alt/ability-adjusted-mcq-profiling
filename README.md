@@ -2,13 +2,13 @@
 
 This repository tests whether score–time "behavioural profiles" of online multiple-choice examinations are classes beyond ability. It does so with null-calibrated mixture IRT.
 
-It extends the unpublished manuscript by **Nisrine Safeh**, *Beyond the Score: Behavioural Profiles from Minimal Process Data in Online Multiple-Choice Examinations* (Faculté des Sciences Ben M'Sick, Université Hassan II de Casablanca). The extension asks whether the profiles found by K-means on (score, total time) survive four tests:
+Using PISA 2025, it asks whether the profiles found by K-means on (score, total time) survive four tests:
 - adjustment for continuous ability;
 - calibration against a no-class null;
 - held-out prediction;
 - replication.
 
-> **Data scope.** All empirical results here come from the **PISA 2025 public-use files** (linear-path mathematics forms). **None concern the 1,979 FSBM students of the source study**, whose data are not available to this project. Any output named `demo_*` comes from synthetic data and is a software test only.
+> **Data scope.** All empirical results here come from the **PISA 2025 public-use files** (linear-path mathematics forms). Any output named `demo_*` comes from synthetic data and is a software test only.
 
 ## What is (and is not) claimed
 - **No new algorithm.** The models are existing mixture-IRT and log-normal duration models. They are organised as a ladder (M0, A_K, M1_K, M2, M3_K, M4_K) and calibrated against simulations from a continuous model fitted to the same assessment.
@@ -22,7 +22,7 @@ src/mcq_profiles/
   data.py           build fixed linear forms from the PISA extracts
   latent_classes.py MixIRT (2PL/Rasch mixtures, class-specific b, censored log-normal duration),
                     LCA, ContinuousIRT (1D/2D, optional guessing)
-  baseline.py       the source pipeline (K-means, GMM, Ward, DBSCAN/HDBSCAN, stability)
+  baseline.py       the score–time pipeline (K-means, GMM, Ward, DBSCAN/HDBSCAN, stability)
   simulation.py     null and positive-control generators
   statistics.py     Q3, l_z, logistic DIF, BH, Clopper–Pearson, Cramér's V, bootstrap
   evaluation.py     masked-item log loss / Brier / calibration
@@ -59,8 +59,7 @@ The test set is used only by stage `e10`. The protocol requires that stage to be
 ## Data and ethics
 - No student-level data are committed. `data/raw/`, `data/processed/`, `*.sav`, `*.parquet` and checkpoints are git-ignored.
 - PISA public-use files are anonymised. Redistributing them is governed by the OECD terms of use.
-- The FSBM data may only be analysed with the authorisation of the source author and the data custodians.
 - Profiles must not be used for high-stakes decisions about individual students. The study validates no pedagogical outcome.
 
 ## Licence and citation
-Code: MIT (see `LICENSE`). The licence does not cover the PISA data or the source manuscript. Authorship of the extension is to be agreed with the source author before any public release (see `CITATION.cff`).
+Code: MIT (see `LICENSE`). The licence does not cover the PISA data. The score–time profiling question was raised in an unpublished manuscript by N. Safeh (cited in the paper).
