@@ -74,7 +74,7 @@ pts = base.mark_circle(size=28, color="#2a78d6", opacity=0.8).encode(
 xbar = base.mark_rule(color="#9fbfe8", opacity=0.6).encode(x="theta_lo:Q", x2="theta_hi:Q", y="rel_time:Q")
 ybar = base.mark_rule(color="#9fbfe8", opacity=0.6).encode(x="theta:Q", y="rel_time_lo:Q", y2="rel_time_hi:Q")
 zero = alt.Chart(pd.DataFrame({"y": [0]})).mark_rule(color="#52514e", strokeDash=[4, 4]).encode(y="y:Q")
-st.altair_chart((xbar + ybar + pts + zero).properties(height=460), use_container_width=True)
+st.altair_chart((xbar + ybar + pts + zero).properties(height=460), width="stretch")
 
 st.subheader("Compare two students")
 a, b = st.columns(2)
@@ -88,7 +88,7 @@ for q, name in [("theta", "ability"), ("rel_time", "relative time")]:
         st.write(f"- {name}: {verdict}.")
 
 st.subheader("Table")
-st.dataframe(co.round(3), use_container_width=True, hide_index=True)
+st.dataframe(co.round(3), width="stretch", hide_index=True)
 st.download_button("Download the table (CSV)", co.to_csv(index=False), "ability_relative_time.csv", "text/csv")
 
 st.subheader("Limits of interpretation")

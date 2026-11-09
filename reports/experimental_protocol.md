@@ -166,3 +166,13 @@ Psychological or affective labels (anxious, bored, disengaged) for classes. EFFO
 - **Submission format.** An IEEE Access version (`manuscript/access.tex`) shares the sections, tables and figures of `article.tex`; only the abstract was rewritten to the journal's rules.
 - **Framing (2026-11-09, authors' decision).** The paper is framed on PISA 2025 alone. Mentions of the FSBM examination were removed from the manuscript, README and notebooks; the unpublished manuscript that raised the question is cited once. No analysis changed. The frozen protocol text above is left unchanged.
 - **Continuous alternative (`stage_continuous_map`, 2026-11-09, exploratory, training splits of Forms A, B, C; the test set was not re-evaluated).** (i) Reliability of K-means profile labels: 200 parallel-test scores per student drawn from the M0 posterior on the student's own items, time held fixed, assignment to the nearest training-split centroid. (ii) EAP reliability from the same model. (iii) 5-fold cross-validated prediction of EFFORT1 from the profiles or from continuous ability and log time. Added after all main results to support the paper's practical recommendation; not part of any registered hypothesis.
+
+### Deviation log — 2026-11-09 (extensions B and C; separate protocol)
+- **New protocol for two extensions:** `reports/protocol_continuous_temporal.md`, frozen at commit `fe7dab6` before any Form B or Form C test-split data were used.
+  - **B:** an uncertainty-aware continuous representation, compared with discrete profiles.
+  - **C:** latent time regimes compared with flexible continuous time distributions.
+  - **Development:** Form A training split only, with an internal 70/30 split. The Form A test split, already examined in E10, is not reused.
+  - **Validation:** the untouched Form B and C test splits.
+- **Change made during development, before freezing:** H8 was redefined from raw interval coverage to coverage minus model-expected coverage. Masked scores are discrete, so equal-tailed 90 % intervals hold more than 90 % of the mass: raw coverage was 0.964 on the development split.
+- **Recorded after freezing, no change made:** the largest 95th percentile of the null ΔBIC (−9.2, from the t-spline null) is negative. Criterion (i) of the regime rule is therefore weaker than ΔBIC > 0. The rule is applied as frozen and this is reported.
+- **Software:** time models use PyTorch automatic differentiation for exact gradients. The Streamlit prototype is in `app/`. Its headless test (`tests/test_dashboard.py::test_streamlit_app_runs_with_demo_data`) failed intermittently with `ModuleNotFoundError: streamlit` while other jobs were running, then passed 6 of 6 times on re-run. The cause was not identified.

@@ -1,0 +1,69 @@
+{
+ "form": "math_formB",
+ "part": "confirm",
+ "n_eval": 1603,
+ "intervals": {
+  "CTR": {
+   "coverage90": 0.9688983262553085,
+   "expected_coverage": 0.9675457774253021,
+   "coverage_minus_expected": 0.0013525488300063504,
+   "width_mean": 3.7188358730951787,
+   "logscore_mean": -1.5451907605362596
+  },
+  "G3PL": {
+   "coverage90": 0.9686485136147889,
+   "expected_coverage": 0.9678361268522978,
+   "coverage_minus_expected": 0.0008123867624910686,
+   "width_mean": 3.7869098176367726,
+   "logscore_mean": -1.555870736130573
+  },
+  "KMeans4_score_time": {
+   "coverage90": 0.9163127654259305,
+   "expected_coverage": 0.9668731467763181,
+   "coverage_minus_expected": -0.05056038135038754,
+   "width_mean": 3.5380964276792404,
+   "logscore_mean": -1.7282750765679658
+  },
+  "CTR_kmeans4": {
+   "coverage90": 0.9004496627529353,
+   "expected_coverage": 0.9677843453167252,
+   "coverage_minus_expected": -0.06733468256378994,
+   "width_mean": 3.5488383712215836,
+   "logscore_mean": -1.7886925077811635
+  }
+ },
+ "split_half": {
+  "theta_r": 0.8000950090694978,
+  "theta_sb": 0.8889475333672322,
+  "rel_time_r": 0.7020625818228224,
+  "rel_time_sb": 0.8249550742969146,
+  "kmeans_kappa": 0.520754519503627,
+  "kmeans_agreement": 0.6614123581336696,
+  "theta_quartile_kappa": 0.37643339265354203,
+  "n": 1608
+ },
+ "effort": {
+  "r2_test": {
+   "profiles": 0.02217436479752599,
+   "continuous": 0.03879416056732887,
+   "both": 0.038779845609608454
+  },
+  "n": 1515,
+  "mse_gain_continuous_vs_profiles": [
+   0.06727552272329022,
+   -0.00805347925769454,
+   0.13753187719925594
+  ]
+ },
+ "dashboard": {
+  "theta_interval_width_mean": 1.2874309892493925,
+  "share_theta_interval_excludes_median": 0.5161691542288557,
+  "share_rel_time_interval_excludes_0": 0.35709779179810724,
+  "eap_reliability": 0.831431327877808,
+  "separation_strata": 3.2945043910885237,
+  "corr_theta_rel_time": 0.04005900369037588,
+  "share_rel_time_missing": 0.014303482587064677,
+  "between_profile_share_of_theta_variance": 0.6958492241630208,
+  "between_profile_share_of_rel_time_variance": 0.2953676045470436
+ }
+}

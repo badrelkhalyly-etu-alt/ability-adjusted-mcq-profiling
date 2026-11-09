@@ -1,0 +1,7 @@
+12:48:08                     R  regime_wins_bic   dBIC_q95  dBIC_median  heldout_gain_median  heldout_gain_q95
+generator                                                                                            
+normal_cubic_het   20             0.05 -20.885560   -36.013437            -0.001132          0.000232
+positive_regimes2  20             1.00  46.953677    31.948482             0.005173          0.009402
+shash_spline       20             0.00 -31.365310   -36.691668            -0.009231         -0.003808
+skewnormal_spline  20             0.00 -35.494923   -56.296723            -0.007943         -0.003596
+t_spline           20             0.00  -9.155155   -21.854305            -0.005633         -0.002641

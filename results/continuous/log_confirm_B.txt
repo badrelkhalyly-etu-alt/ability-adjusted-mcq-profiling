@@ -1,0 +1,84 @@
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\continuous_map.py:37: RuntimeWarning: Mean of empty slice
+  return np.nanmean(log_rt, 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\continuous_map.py:37: RuntimeWarning: Mean of empty slice
+  return np.nanmean(log_rt, 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\continuous_map.py:37: RuntimeWarning: Mean of empty slice
+  return np.nanmean(log_rt, 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\continuous_map.py:37: RuntimeWarning: Mean of empty slice
+  return np.nanmean(log_rt, 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\continuous_map.py:37: RuntimeWarning: Mean of empty slice
+  return np.nanmean(log_rt, 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\continuous_map.py:37: RuntimeWarning: Mean of empty slice
+  return np.nanmean(log_rt, 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\run_continuous_eval.py:206: RuntimeWarning: Mean of empty slice
+  sc = np.nanmean(Yh, 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\continuous_map.py:37: RuntimeWarning: Mean of empty slice
+  return np.nanmean(log_rt, 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\run_continuous_eval.py:206: RuntimeWarning: Mean of empty slice
+  sc = np.nanmean(Yh, 1)
+13:15:32                  model   logloss     brier       ece  logloss_weighted
+3                  CTR  0.448244  0.147036  0.010409          0.428030
+10           M3_3_time  0.448267  0.147141  0.010391          0.427847
+8                 M1_3  0.448810  0.147428  0.008259          0.426254
+9               MIRT2G  0.449149  0.147390  0.011820          0.425585
+2                 G3PL  0.449714  0.147621  0.011299          0.427416
+4          CTR_no_time  0.450194  0.147762  0.011624          0.428381
+7                   M0  0.453858  0.149002  0.010648          0.432376
+1   KMeans4_score_time  0.473875  0.156944  0.008651          0.456182
+5          CTR_kmeans4  0.482102  0.160081  0.008220          0.463021
+6          CTR_grid2x2  0.484487  0.161048  0.008616          0.461962
+0             Marginal  0.555377  0.188926  0.006599          0.544913 
+   better                than      gain     ci_lo     ci_hi  gain_weighted  ci_lo_weighted  ci_hi_weighted
+0    CTR  KMeans4_score_time  0.024559  0.020850  0.028527       0.028152        0.020714        0.036155
+1    CTR         CTR_kmeans4  0.033486  0.029378  0.038041       0.034991        0.024905        0.045210
+2    CTR         CTR_grid2x2  0.035860  0.031176  0.040671       0.033932        0.023493        0.045013
+3    CTR                G3PL  0.001349  0.000130  0.002575      -0.000613       -0.002819        0.001555
+4    CTR         CTR_no_time  0.001823  0.000662  0.003024       0.000351       -0.002086        0.002617
+5    CTR           M3_3_time -0.000369 -0.001676  0.000918      -0.000182       -0.002475        0.002278
+6    CTR              MIRT2G  0.000741 -0.000694  0.002158      -0.002445       -0.005201        0.000336
+7    CTR                M1_3  0.000370 -0.001173  0.001872      -0.001776       -0.005308        0.001575
+8   G3PL  KMeans4_score_time  0.023210  0.019399  0.027107       0.028765        0.021205        0.036852 
+ {'CTR': {'coverage90': 0.9688983262553085, 'expected_coverage': 0.9675457774253021, 'coverage_minus_expected': 0.0013525488300063504, 'width_mean': 3.7188358730951787, 'logscore_mean': -1.5451907605362596}, 'G3PL': {'coverage90': 0.9686485136147889, 'expected_coverage': 0.9678361268522978, 'coverage_minus_expected': 0.0008123867624910686, 'width_mean': 3.7869098176367726, 'logscore_mean': -1.555870736130573}, 'KMeans4_score_time': {'coverage90': 0.9163127654259305, 'expected_coverage': 0.9668731467763181, 'coverage_minus_expected': -0.05056038135038754, 'width_mean': 3.5380964276792404, 'logscore_mean': -1.7282750765679658}, 'CTR_kmeans4': {'coverage90': 0.9004496627529353, 'expected_coverage': 0.9677843453167252, 'coverage_minus_expected': -0.06733468256378994, 'width_mean': 3.5488383712215836, 'logscore_mean': -1.7886925077811635}} 
+ {'theta_r': np.float64(0.8000950090694978), 'theta_sb': np.float64(0.8889475333672322), 'rel_time_r': np.float64(0.7020625818228224), 'rel_time_sb': np.float64(0.8249550742969146), 'kmeans_kappa': 0.520754519503627, 'kmeans_agreement': 0.6614123581336696, 'theta_quartile_kappa': 0.37643339265354203, 'n': 1608} 
+ {'r2_test': {'profiles': 0.02217436479752599, 'continuous': 0.03879416056732887, 'both': 0.038779845609608454}, 'n': 1515, 'mse_gain_continuous_vs_profiles': (0.06727552272329022, -0.00805347925769454, 0.13753187719925594)} 
+ {'theta_interval_width_mean': 1.2874309892493925, 'share_theta_interval_excludes_median': 0.5161691542288557, 'share_rel_time_interval_excludes_0': 0.35709779179810724, 'eap_reliability': 0.831431327877808, 'separation_strata': 3.2945043910885237, 'corr_theta_rel_time': 0.04005900369037588, 'share_rel_time_missing': 0.014303482587064677, 'between_profile_share_of_theta_variance': 0.6958492241630208, 'between_profile_share_of_rel_time_variance': 0.2953676045470436}
