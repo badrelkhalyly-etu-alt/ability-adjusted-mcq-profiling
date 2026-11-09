@@ -17,7 +17,7 @@
     "H4": {"status": "not_supported", "cramers_v_class_x_score_quartile": 0.642, "cramers_v_class_x_oecd": 0.197},
     "H5": {"status": "not_supported", "dR2": {"kmeans": 0.0020, "M1_2": 0.0010, "M1_3": 0.0039}}
   },
-  "source_pipeline": {"silhouette_k4": 0.353, "copula_null_mean": 0.363, "irt_null_mean": 0.396, "lca_K4_under_null": "80/80",
+  "source_pipeline": {"silhouette_k4": 0.353, "copula_null_mean": 0.363, "irt_null_mean": {"fitted": 0.396, "skewed": 0.391}, "lca_K4_under_null": "80/80",
                       "kmeans_predictor_vs_2PL_nats": -0.021},
   "power": {"shift_0.5": 0.0, "shift_1.0": "0.4-1.0", "shift_1.5": 1.0}
 }

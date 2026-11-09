@@ -33,6 +33,7 @@ import numpy as np
 from dataclasses import dataclass, field
 from scipy.special import expit, log_expit, logsumexp, log_ndtr
 from scipy.optimize import minimize
+from numpy.polynomial import polynomial as P
 
 LOG2PI = np.log(2 * np.pi)
 
@@ -363,9 +364,11 @@ class MixIRT:
             self.beta = self.beta * s
 
     # ------------------------------------------------------------------- fit
-    def fit(self, Y, logT=None, cens=None, group=None):
+    def fit(self, Y, logT=None, cens=None, group=None, weights=None):
+        """weights: optional sampling weights (pseudo-likelihood; rescaled to mean 1)."""
         data = self._prep(Y, logT, cens, group)
         Yf, M, logT, cens, group = data
+        w = None if weights is None else np.asarray(weights, float) / np.mean(weights)
         self.G = int(group.max()) + 1
         J = Yf.shape[1]
         rng = np.random.default_rng(self.rs)
@@ -378,6 +381,8 @@ class MixIRT:
             conv = False
             for it in range(self.max_iter):
                 post, lli = self._estep(*data)
+                if w is not None:
+                    post, lli = post * w[:, None, None], lli * w
                 obj = lli.sum() - self._penalty()
                 hist.append(obj)
                 if abs(obj - prev) < self.tol * abs(obj):
@@ -558,7 +563,8 @@ class ContinuousIRT:
             pen -= ((2 - 1) * np.log(self.c) + (8 - 1) * np.log1p(-self.c)).sum()
         return pen
 
-    def fit(self, Y, logT=None, cens=None, group=None):
+    def fit(self, Y, logT=None, cens=None, group=None, weights=None):
+        w = None if weights is None else np.asarray(weights, float) / np.mean(weights)
         Y = np.asarray(Y, float)
         M = (~np.isnan(Y)).astype(float)
         Yf = np.nan_to_num(Y)
@@ -573,6 +579,8 @@ class ContinuousIRT:
         hist, prev, conv = [], -np.inf, False
         for it in range(self.max_iter):
             post, lli = self._estep(Yf, M)
+            if w is not None:
+                post, lli = post * w[:, None], lli * w
             obj = lli.sum() - self._penalty()
             hist.append(obj)
             if abs(obj - prev) < self.tol * abs(obj):
@@ -644,3 +652,138 @@ class ContinuousIRT:
 
     def bic(self, n):
         return -2 * self.result_.loglik + self.result_.n_params * np.log(n)
+
+
+def _poly_affine(c, a0, a1):
+    """Coefficients (ascending) of t -> P(a0 + a1 t), where P has ascending coefficients c."""
+    out = np.zeros(len(c))
+    base = np.array([1.0])
+    for p, cp in enumerate(c):
+        out[:len(base)] += cp * base
+        base = P.polymul(base, [a0, a1])[:len(c)]
+    return out
+
+
+class MixIRTDurPoly(MixIRT):
+    """MixIRT with a flexible duration model (exploratory competitor to duration classes):
+    log T | theta, class k, group g ~ N(alpha_k + gamma_g + sum_p beta_kp theta^p, exp(logs_k + delta_k theta)^2),
+    i.e. a polynomial of degree ``deg`` in theta and (``het=True``) a log-linear residual SD.
+    With n_classes=1 this is a *continuous* model with a non-linear speed-ability relation.
+    """
+
+    def __init__(self, *args, deg=3, het=True, **kw):
+        kw["duration"] = True
+        super().__init__(*args, **kw)
+        self.deg, self.het = deg, het
+
+    def n_params(self, J, G):
+        return super().n_params(J, G) + self.K * (self.deg - 1) + (self.K if self.het else 0)
+
+    def _init(self, Yf, M, logT, cens, group, rng):
+        super()._init(Yf, M, logT, cens, group, rng)
+        self.C = np.zeros((self.K, self.deg + 1))
+        self.C[:, 0] = self.alpha
+        self.delta = np.zeros(self.K)
+
+    def _powers(self):
+        return self.x[None, :] ** np.arange(self.deg + 1)[:, None]  # (deg+1, Q)
+
+    def _mean_logs(self, C, logs, delta, gamma, group):
+        mean = (C @ self._powers())[None] + gamma[group][:, None, None]       # N,K,Q
+        ls = logs[:, None] + (delta[:, None] * self.x[None] if self.het else 0.0)  # K,Q
+        return mean, np.broadcast_to(ls, (self.K, len(self.x)))[None]
+
+    def _dur_ll(self, logT, cens, group):
+        mean, ls = self._mean_logs(self.C, self.logs, self.delta, self.gamma, group)
+        s = np.exp(ls)
+        miss = np.isnan(logT)
+        z = (np.nan_to_num(logT)[:, None, None] - mean) / s
+        ll = -0.5 * z ** 2 - ls - 0.5 * LOG2PI
+        if cens.any():
+            ll[cens] = log_ndtr(-z[cens])
+        ll[miss] = 0.0
+        return ll, z
+
+    def _mstep_duration(self, post, logT, cens, group):
+        K, G, D = self.K, self.G, self.deg + 1
+        ge = self.group_effects and G > 1
+        X = self._powers()
+        obs = ~np.isnan(logT)
+        post = post * obs[:, None, None]
+        logT = np.nan_to_num(logT)
+        nC = K * D
+
+        def unpack(v):
+            C = v[:nC].reshape(K, D)
+            logs = v[nC:nC + K]
+            o = nC + K
+            delta = v[o:o + K] if self.het else np.zeros(K)
+            o += K if self.het else 0
+            ga = np.concatenate([[0.0], v[o:]]) if ge else np.zeros(G)
+            return C, logs, delta, ga
+
+        def f(v):
+            C, logs, delta, ga = unpack(v)
+            mean, ls = self._mean_logs(C, logs, delta, ga, group)
+            s = np.exp(ls)
+            z = (logT[:, None, None] - mean) / s
+            ll = -0.5 * z ** 2 - ls
+            dmean = z / s
+            dls = z ** 2 - 1.0
+            if cens.any():
+                zc = z[cens]
+                lc = log_ndtr(-zc)
+                ll[cens] = lc
+                h = np.exp(-0.5 * zc ** 2 - 0.5 * LOG2PI - lc)
+                dmean[cens] = h / s[0][None]
+                dls[cens] = h * zc
+            gm, gl = post * dmean, post * dls
+            gmk = gm.sum(0)                      # K,Q
+            grad = [(gmk @ X.T).ravel(), gl.sum((0, 2))]
+            if self.het:
+                grad.append((gl * self.x[None, None, :]).sum((0, 2)))
+            if ge:
+                gg = np.zeros(G)
+                np.add.at(gg, group, gm.sum((1, 2)))
+                grad.append(gg[1:])
+            return -(post * ll).sum(), -np.concatenate(grad)
+
+        v0 = np.concatenate([self.C.ravel(), self.logs] + ([self.delta] if self.het else []) + ([self.gamma[1:]] if ge else []))
+        r = minimize(f, v0, jac=True, method="L-BFGS-B", options={"maxiter": 100})
+        C, logs, delta, ga = unpack(r.x)
+        self.C, self.logs, self.delta, self.gamma = C, np.maximum(logs, -5), delta, ga
+        self.alpha, self.beta = C[:, 0], C[:, 1]
+
+    def _identify(self):
+        K = self.K
+        if K > 1 and self.cs in ("b", "ab"):
+            d = self.b.mean() - self.b.mean(1)
+            self.b = self.b + d[:, None]
+            self.mu = self.mu + d
+            for k in range(K):   # theta_new = theta_old + d_k
+                self.C[k] = _poly_affine(self.C[k], -d[k], 1.0)
+                self.logs[k] = self.logs[k] - self.delta[k] * d[k]
+        pi = np.exp(self.logpi).mean(0)
+        m = (pi * self.mu).sum()
+        v = (pi * (self.sigma ** 2 + self.mu ** 2)).sum() - m ** 2
+        s = np.sqrt(v) if self.model == "2pl" else 1.0
+        self.mu = (self.mu - m) / s
+        self.sigma = self.sigma / s
+        self.b = (self.b - m) / s
+        if self.model == "2pl":
+            self.a = self.a * s
+        for k in range(K):       # theta_old = m + s theta_new
+            self.C[k] = _poly_affine(self.C[k], m, s)
+        self.logs = self.logs + self.delta * m
+        self.delta = self.delta * s
+        self.alpha, self.beta = self.C[:, 0], self.C[:, 1]
+
+    def _get_state(self):
+        st = super()._get_state()
+        st.update(C=np.copy(self.C), delta=np.copy(self.delta))
+        return st
+
+    def _order_classes(self):
+        o = np.argsort(self.mu)
+        super()._order_classes()
+        self.C, self.delta = self.C[o], self.delta[o]

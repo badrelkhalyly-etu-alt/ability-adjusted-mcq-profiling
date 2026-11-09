@@ -714,8 +714,8 @@ def stage_contingency(form, demo=False):
                rf"Cram\'er's $V={s['cramers_v']:.2f}$, $n={s['n']}$.")
         tex.append(cells.to_latex(caption=cap.replace("_", r"\_"), label="tab:ct_" + key.replace("_", ""), escape=False)
                    .replace("M1_", r"M1\_")
-                   .replace(r"\begin{tabular}", r"\resizebox{\textwidth}{!}{\begin{tabular}")
-                   .replace(r"\end{tabular}", r"\end{tabular}}"))
+                   .replace(r"\begin{tabular}", r"\begin{adjustbox}{max width=\textwidth}\begin{tabular}")
+                   .replace(r"\end{tabular}", r"\end{tabular}\end{adjustbox}"))
         log("contingency", key, s)
     # descriptive mean ability / time per M1_3 class
     eap = M["M0"].posterior(Y, None, None, g)[1]
@@ -759,3 +759,119 @@ def stage_competitors(form, demo=False):
                dBIC_bestM1_vs_bestcontinuous=min(B[k] for k in ["M0", "A2", "A3", "MIRT2", "G3PL", "MIRT2G"]) - min(B["M1_2"], B["M1_3"]))
     save_json(res, f"{form}_competitors.json")
     log(form, "competitors", res)
+
+
+# ------------------------------------------------------------------ robustness (Q1-readiness items 4, 5, 8; deviation log)
+def _rob_job(path, variant, name, Ytr, logTtr, censtr, gtr, w, demo):
+    def go():
+        from mcq_profiles.latent_classes import ContinuousIRT, MixIRTDurPoly
+        t0 = time.time()
+        comp = {"G3PL": dict(dims=1, guessing=True), "MIRT2": dict(dims=2), "MIRT2G": dict(dims=2, guessing=True)}
+        if name in comp:
+            m = ContinuousIRT(**comp[name], max_iter=1500 if not demo else 100).fit(Ytr, weights=w)
+        elif name.endswith("_poly3h"):
+            base = mk(**MODEL_SPECS[name.replace("_poly3h", "")], demo=demo)
+            m = MixIRTDurPoly(base.K, "2pl", class_specific=base.cs, group_effects=base.group_effects, deg=3, het=True,
+                              n_nodes=len(base.x), ridge=base.ridge, n_starts=base.n_starts, max_iter=base.max_iter,
+                              tol=base.tol, random_state=base.rs)
+            m.fit(Ytr, logTtr, censtr, gtr)
+        else:
+            spec = MODEL_SPECS[name]
+            m = mk(**spec, demo=demo)
+            m.fit(Ytr, logTtr if m.duration else None, censtr if m.duration else None, gtr, weights=w)
+        return dict(variant=variant, model=name, loglik=float(m.result_.loglik), k=int(m.result_.n_params),
+                    conv=bool(m.result_.converged), secs=time.time() - t0, model_obj=m)
+    return _cached(path, go)
+
+
+def _nr_incorrect_Y(form, df, meta):
+    from mcq_profiles.data import build_form
+    root = RES.parent / "data" / "processed"
+    cog = pd.read_parquet(root / "cog_linear_items.parquet")
+    pro = pd.read_parquet(root / "process_linear_items.parquet")
+    alt, _ = build_form(cog, pro, rank=meta["form_rank"], path=meta["path"], not_reached="incorrect",
+                        polytomous=meta.get("polytomous_rule", "full"))
+    assert (alt.CNT.to_numpy() == df.CNT.to_numpy()).all() and (alt.CNTSTUID.to_numpy() == df.CNTSTUID.to_numpy()).all()
+    from mcq_profiles.data import item_matrix
+    Y = item_matrix(alt)
+    Y0 = item_matrix(df)
+    same = ~np.isnan(Y0)
+    assert np.allclose(Y[same], Y0[same])          # only not-reached cells change
+    return Y
+
+
+def stage_robustness(form, demo=False):
+    """(i) not-reached scored incorrect, (ii) sampling-weighted pseudo-likelihood fits,
+    (iii) continuous duration model with cubic speed-ability curve and theta-dependent residual SD."""
+    ck = load_ckpt(form)
+    df, meta = load_form(form, demo)
+    Y, logT, cens, g, _ = arrays(df)
+    tr = ck["tr"]
+    n = int(tr.sum())
+    d = CKPT / f"{form}_robustness"
+    d.mkdir(exist_ok=True)
+    resp = ["M0", "A2", "M1_2", "M1_3", "G3PL", "MIRT2", "MIRT2G"]
+    jobs = []
+    if not demo:
+        Ynr = _nr_incorrect_Y(form, df, meta)
+        jobs += [("nr_incorrect", m, Ynr[tr], None) for m in resp]
+        ext = pd.read_parquet(RES.parent / "data" / "processed" / "student_external.parquet")
+        w = df[["CNT", "CNTSTUID"]].merge(ext[["CNT", "CNTSTUID", "W_FSTUWT"]], how="left").W_FSTUWT.to_numpy(float)
+        assert len(w) == len(df)
+        n_w_missing = int(np.isnan(w[tr]).sum())
+        wtr = np.where(np.isnan(w[tr]), np.nanmedian(w[tr]), w[tr])
+        jobs += [("weighted", m, Y[tr], wtr) for m in resp]
+    else:
+        n_w_missing = 0
+    jobs += [("duration", m, Y[tr], None) for m in ["M2_poly3h", "M3_2_poly3h", "M3_3_poly3h"]]
+    jobs.sort(key=lambda j: ("M3_3" not in j[1], "M3_2" not in j[1], "MIRT2G" != j[1]))  # longest first
+    out = Parallel(n_jobs=min(N_JOBS, len(jobs)))(
+        delayed(_rob_job)(d / f"{v}_{m}.pkl", v, m, Yv, logT[tr], cens[tr], g[tr], w_, demo) for v, m, Yv, w_ in jobs)
+    rows = []
+    for o in out:
+        r = {k: v for k, v in o.items() if k != "model_obj"}
+        r["BIC"] = -2 * r["loglik"] + r["k"] * np.log(n)
+        rows.append(r)
+    # reference (unweighted, not-reached missing) fits
+    comp = pickle.load(open(CKPT / f"{form}_competitors.pkl", "rb")) if (CKPT / f"{form}_competitors.pkl").exists() else {}
+    if not comp and (CKPT / f"{form}_E3b.pkl").exists():
+        comp = pickle.load(open(CKPT / f"{form}_E3b.pkl", "rb")).get("models", {})
+    ref = {k: m for k, m in ck["models"].items()}
+    ref.update(comp)
+    for k, m in ref.items():
+        if k in resp or k.startswith(("M2", "M3", "M4")):
+            rows.append(dict(variant="reference", model=k, loglik=float(m.result_.loglik), k=int(m.result_.n_params),
+                             conv=bool(m.result_.converged), secs=np.nan,
+                             BIC=-2 * float(m.result_.loglik) + int(m.result_.n_params) * np.log(n)))
+    tab = pd.DataFrame(rows)
+    tab["dBIC_within_variant"] = tab.BIC - tab.groupby("variant").BIC.transform("min")
+    tab.to_csv(RES / "tables" / f"{form}_robustness.csv", index=False)
+    B = {(r.variant, r.model): r.BIC for r in tab.itertuples()}
+    res = dict(n_train=n, n_weight_missing=n_w_missing, best={v: tab[tab.variant == v].sort_values("BIC").model.iloc[0]
+                                                              for v in tab.variant.unique()})
+    for v in ["reference", "nr_incorrect", "weighted"]:
+        if (v, "M1_3") in B and (v, "G3PL") in B:
+            res[f"{v}_dBIC_G3PL_minus_bestM1"] = B[(v, "G3PL")] - min(B[(v, "M1_2")], B[(v, "M1_3")])
+            res[f"{v}_dBIC_bestA_or_M0_minus_bestM1"] = min(B.get((v, "A2"), np.inf), B[(v, "M0")]) - min(B[(v, "M1_2")], B[(v, "M1_3")])
+    g_ = lambda v, m: B.get((v, m), np.nan)
+    res["duration"] = dict(
+        M2_linear=g_("reference", "M2"), M2_poly3h=g_("duration", "M2_poly3h"),
+        M3_2_linear=g_("reference", "M3_2"), M3_2_poly3h=g_("duration", "M3_2_poly3h"),
+        M3_3_linear=g_("reference", "M3_3"), M3_3_poly3h=g_("duration", "M3_3_poly3h"),
+        dBIC_M2linear_minus_M3_2linear=g_("reference", "M2") - g_("reference", "M3_2"),
+        dBIC_M2poly_minus_M3_2poly=g_("duration", "M2_poly3h") - g_("duration", "M3_2_poly3h"),
+        dBIC_M2poly_minus_M3_3poly=g_("duration", "M2_poly3h") - g_("duration", "M3_3_poly3h"),
+        dBIC_M2linear_minus_M2poly=g_("reference", "M2") - g_("duration", "M2_poly3h"),
+        response_only_dBIC_M0_minus_M1_2=g_("reference", "M0") - g_("reference", "M1_2"))
+    # stability of the class contrast under weighting / not-reached rule
+    objs = {(o["variant"], o["model"]): o["model_obj"] for o in out}
+    ref_m = ck["models"]["M1_3"]
+    for v in ["weighted", "nr_incorrect"]:
+        if (v, "M1_3") in objs:
+            mm = objs[(v, "M1_3")]
+            dv = lambda m: (m.b - m.b.mean(0)).ravel()
+            res[f"{v}_M1_3_dev_corr_with_reference"] = float(np.corrcoef(dv(mm), dv(ref_m))[0, 1])
+            res[f"{v}_M1_3_class_props"] = np.exp(mm.logpi[0]).round(3).tolist()
+    res["reference_M1_3_class_props"] = np.exp(ref_m.logpi[0]).round(3).tolist()
+    save_json(res, f"{form}_robustness.json")
+    log(form, "robustness\n" + tab.sort_values(["variant", "BIC"]).to_string() + "\n" + str(res))

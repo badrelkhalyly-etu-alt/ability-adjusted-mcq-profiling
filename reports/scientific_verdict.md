@@ -37,7 +37,7 @@ The protocol could have detected substantial classes. The negative result is the
 
 ## Why C and not B or D
 - **Not B.** The only improvement over the registered competitors vanishes once guessing or a second dimension is modelled, both on held-out data and by BIC on three forms. The "classes" track item properties: their contrast correlates with the guessing asymptote (r = 0.55) and with the second-dimension loading (r = 0.77). They largely reproduce score levels.
-- **Not D.** Power is adequate for shifts of 1 logit or more (n ≈ 4,000 per form). The test set and two replication forms give consistent answers.
+- **Not D.** Power is adequate for shifts of 1 logit or more (3,363–3,980 training students per form). The test set and two replication forms give consistent answers.
 - The small, reliable gain from total time (H2) concerns a continuous covariate, not classes.
 
 ## Alternative publishable question (verdict C)

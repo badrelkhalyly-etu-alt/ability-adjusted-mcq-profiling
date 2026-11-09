@@ -15,6 +15,7 @@ for f in "ABC":
     if not p.exists():
         continue
     d = pd.read_parquet(p)
+    meta = __import__("json").loads(p.with_suffix(".json").read_text())
     items = [c for c in d.columns if c.startswith("I") and c[1:].isdigit()]
     Y = d[items].to_numpy(dtype=float, copy=True)
     t = d["total_duration_minutes"].to_numpy(dtype=float, copy=True)
@@ -22,7 +23,7 @@ for f in "ABC":
     zero_time = int((t <= 0).sum())
     tt = t[t > 0]
     rows.append(dict(
-        form=f, n=len(d), items=len(items), countries=d.CNT.nunique(), schools=d.CNTSCHID.nunique(),
+        form=f, n=len(d), items=len(items), polytomous_items=len(meta.get("polytomous_items", [])), countries=d.CNT.nunique(), schools=d.CNTSCHID.nunique(),
         oecd_share=float(d.OECD.mean()), booklets=d.BOOKID.nunique(),
         mean_pcorrect=float(np.nanmean(Y)), score_mean=float(np.nansum(Y, 1).mean()),
         pct_missing_resp=float(np.isnan(Y).mean() * 100), pct_any_not_reached=float((d.n_not_reached > 0).mean() * 100),
@@ -31,7 +32,7 @@ for f in "ABC":
 tab = pd.DataFrame(rows)
 tab.to_csv(ROOT / "results/tables/data_descriptives.csv", index=False)
 
-lab = [("Students", "n", "{:,.0f}"), ("Items", "items", "{:.0f}"), ("Countries/economies", "countries", "{:.0f}"),
+lab = [("Students", "n", "{:,.0f}"), ("Items", "items", "{:.0f}"), ("of which polytomous", "polytomous_items", "{:.0f}"), ("Countries/economies", "countries", "{:.0f}"),
        ("Schools", "schools", "{:,.0f}"), ("Booklets", "booklets", "{:.0f}"), ("OECD share", "oecd_share", "{:.2f}"),
        ("Mean proportion correct", "mean_pcorrect", "{:.3f}"), ("Mean score", "score_mean", "{:.2f}"),
        ("Missing responses (\\%)", "pct_missing_resp", "{:.2f}"),

@@ -88,9 +88,11 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
      "K-means (k = 2..8), internal indices, 5-fold held-out silhouette, bootstrap ARI/Jaccard, log-time variant, GMM/BIC, "
      "agglomerative, DBSCAN/HDBSCAN, Hopkins statistic, and a no-cluster null distribution of the silhouette.",
      [RUN, "run('baseline')", SHOW,
-      "show_json('math_formA_E1_baseline.json', ['n_used', 'pearson_r', 'spearman_r', 'k4', 'k4_profiles', 'k4_bootstrap_ari', 'hopkins'])\n"
+      "show_json('math_formA_E1_baseline.json')  # every E1 number cited in the article (k = 2..8, CV silhouette, ARI, GMM, HDBSCAN, null)\n"
       "d = json.loads(Path('results/metrics/math_formA_E1_baseline.json').read_text())['null_silhouette']\n"
-      "print('no-cluster null silhouette:', {k: d[k] for k in ['mean', 'q95', 'p_value']})",
+      "print('no-cluster null silhouette:', {k: d[k] for k in ['mean', 'q95', 'p_value']})\n"
+      "c = json.loads(Path('results/metrics/math_formA_contingency.json').read_text())\n"
+      "print('K-means profile names used in the article:', c['profile_names'])",
       "show_fig('fig01_score_time_clusters')"]),
     ("03_irt_models", "E2/E3: Model ladder and continuous competitors (training split)",
      "Fit M0, A_K, M1_K, M2, M3_K, M4_K and LCA_K on the 70% training split, then the exploratory continuous competitors "
@@ -102,6 +104,7 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       "show_csv('crossform_bic.csv')  # BIC of every model on Forms A, B, C",
       "show_json('math_formA_E3b_competitors.json', ['bic_train', 'class_contrast_vs_item_properties', 'local_dependence_pairs', 'mdim_null'])\n"
       "show_json('math_formA_E3c_guess_null.json')",
+      "show_json('math_formA_fit_diagnostics.json')  # class means, SDs, proportions and duration slopes cited in the article",
       "show_fig('fig05_model_comparison'); show_fig('fig02_04_items_icc')"]),
     ("04_lca_mixirt", "E7 and contingency tables: ability-adjusted classes, stability, cross-classification",
      "Class-specific difficulty deviations after ability adjustment, bootstrap stability, and contingency tables of "
@@ -119,13 +122,21 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
      "Held-out masked-item log loss, Brier score and calibration. Duration is measured on unmasked items only, so the timing "
      "of masked items cannot leak into the prediction. The real test set was evaluated once (protocol); the stage is re-run here only in DEMO mode.",
      [RUN, "if DEMO:\n    run('e10')", SHOW,
-      "show_csv('math_formA_E10_test_scores.csv'); show_csv('math_formA_E10_paired.csv')",
+      "show_csv('math_formA_E10_test_scores.csv'); show_csv('math_formA_E10_paired.csv')\n"
+      "m = json.loads(Path('results/metrics/math_formA_E10_meta.json').read_text())\n"
+      "print('evaluable test students n =', m['n_test'], '| masks:', len(m['masks']))",
       "show_fig('fig12_14_ablation_calibration')"]),
     ("06_null_simulation", "E5/E6: Null (no classes) and positive-control simulations",
      "False-positive rate of the class-selection rule under a continuous-ability generator fitted to the data; power and "
      "recovery under known classes. Replications are checkpointed, so an interrupted run resumes.",
      [RUN, "run('null')", "run('positive')", SHOW,
-      "show_json('math_formA_E5_null.json')", "show_csv('math_formA_E6_positive_summary.csv')",
+      "show_json('math_formA_E5_null.json')",
+      "r5 = pd.read_csv('results/tables/math_formA_E5_null_reps.csv')\n"
+      "display(r5.groupby('cfg').median(numeric_only=True).T)  # medians per null configuration\n"
+      "show_csv('math_formA_E6_positive_summary.csv')\n"
+      "r6 = pd.read_csv('results/tables/math_formA_E6_positive_reps.csv')\n"
+      "print('E6 datasets:', len(r6))\n"
+      "display(r6[r6.dur].groupby(['prop', 'n']).dBIC_dur.agg(['median', 'count', lambda s: int((s > 0).sum())]))",
       "show_fig('fig11_null_simulation')"]),
     ("07_robustness_ablation", "E8/E9/H5: Within-score analysis, DIF and external criterion",
      "Within-score heterogeneity against a null, logistic DIF (OECD and gender), per-subgroup class enumeration, and "
@@ -134,13 +145,21 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       "show_json('math_formA_E8_personfit.json'); show_csv('math_formA_E8_within_score.csv')",
       "show_json('math_formA_E9_dif.json')\n"
       "show_json('math_formA_H5_external.json', ['base', 'kmeans', 'class2', 'class3', 'kmeans_effort_means'])",
-      "show_fig('fig06_09_within_score'); show_fig('fig13_dif')"]),
+      "show_fig('fig06_09_within_score'); show_fig('fig13_dif')",
+      "# Robustness (exploratory, deviation log): not-reached scored incorrect, sampling-weighted fits,\n"
+      "# continuous duration model with a cubic speed-ability curve. Long on real data (about 1 h per form).\n"
+      "RUN_ROBUSTNESS = DEMO\n"
+      "if RUN_ROBUSTNESS:\n    run('robustness', FORM)",
+      "for f in ['math_formA', 'math_formB', 'math_formC']:\n"
+      "    display(Markdown(f'**{f}**')); show_json(f'{f}_robustness.json'); show_csv(f'{f}_robustness.csv')"]),
     ("08_figures_results", "Figures, tables, verdict and reproducibility report",
      "Rebuild every figure and table from the saved outputs, then display the scientific verdict and the Q1-readiness assessment.",
      ["import subprocess, sys\n"
       "steps = [['build_results.py'] + (['--demo'] if DEMO else []), ['build_captions.py']]\n"
       "if not DEMO:\n    steps += [['build_data_table.py'], ['build_crossform_table.py']]\n"
       "for s in steps:\n    print(subprocess.run([sys.executable, 'scripts/' + s[0]] + s[1:], capture_output=True, text=True).stdout[-2000:])",
+      "# Every cell of the manuscript tables must equal its source CSV (prints mismatches, then the total)\n"
+      "print(subprocess.run([sys.executable, 'scripts/check_tables.py'], capture_output=True, text=True).stdout[-3000:])",
       SHOW, "show_json('verdict.json')",
       "display(Markdown(Path('reports/scientific_verdict.md').read_text(encoding='utf8')))",
       "display(Markdown(Path('reports/q1_readiness.md').read_text(encoding='utf8')))"]),
