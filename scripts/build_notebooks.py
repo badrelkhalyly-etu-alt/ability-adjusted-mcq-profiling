@@ -168,6 +168,76 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       SHOW, "show_json('verdict.json')",
       "display(Markdown(Path('reports/scientific_verdict.md').read_text(encoding='utf8')))",
       "display(Markdown(Path('reports/q1_readiness.md').read_text(encoding='utf8')))"]),
+    ("09_continuous_representation", "Continuous ability x relative-time representation with uncertainty (C2, C3)",
+     "Build the uncertainty-aware continuous representation (ability from an IRT model with guessing; relative time "
+     "adjusted for ability, booklet, items reached and item time intensities) and compare it with discrete score-time "
+     "profiles: masked-item prediction, calibration, predictive intervals, split-half stability, survey weights, "
+     "self-reported effort. Development used the Form A training split; confirmation used the untouched Form B and C test splits "
+     "(protocol: reports/protocol_continuous_temporal.md).",
+     ["# 1. Synthetic demonstration (runs anywhere, no PISA data): fit the representation and look at it\n"
+      "from mcq_profiles.dashboard import simulate_demo, compute_map, LIMITATIONS\n"
+      "demo = simulate_demo(n=1500, J=20, seed=0)\n"
+      "co, summ = compute_map(demo, level=0.9)\n"
+      "print(summ); co.head()",
+      "import matplotlib.pyplot as plt\n"
+      "s = co.dropna(subset=['rel_time']).sample(300, random_state=0)\n"
+      "fig, ax = plt.subplots(figsize=(6, 4))\n"
+      "ax.errorbar(s.theta, s.rel_time, xerr=[s.theta - s.theta_lo, s.theta_hi - s.theta], yerr=[s.rel_time - s.rel_time_lo, s.rel_time_hi - s.rel_time],\n"
+      "            fmt='o', ms=3, color='#2a78d6', ecolor='#c8d9f2', elinewidth=0.8)\n"
+      "ax.axhline(0, color='#52514e', ls='--', lw=1); ax.set(xlabel='Ability (logits)', ylabel='Relative time (SD)', title='SYNTHETIC demo')\n"
+      "plt.show()\n"
+      "print('\n'.join(LIMITATIONS))",
+      "# 2. Real analysis (needs the PISA extracts; about 10-40 min per form)\n"
+      "import subprocess, sys\n"
+      "if not DEMO:\n"
+      "    for args in [['--part', 'dev'], ['--part', 'confirm', '--form', 'math_formB'], ['--part', 'confirm', '--form', 'math_formC']]:\n"
+      "        r = subprocess.run([sys.executable, 'scripts/run_continuous_eval.py'] + args, capture_output=True, text=True)\n"
+      "        print(r.stdout[-3000:]); r.check_returncode()",
+      "# 3. Saved PISA 2025 results (aggregate outputs committed to the repository)\n"
+      "import json, pandas as pd\nfrom pathlib import Path\nfrom IPython.display import display, Markdown, Image\n"
+      "R = Path('results/continuous')\n"
+      "for part, form in [('dev', 'math_formA'), ('confirm', 'math_formB'), ('confirm', 'math_formC')]:\n"
+      "    f = R / f'{part}_{form}_scores.csv'\n"
+      "    if not f.exists():\n        print('missing', f); continue\n"
+      "    display(Markdown(f'**{part}, {form}**'))\n"
+      "    display(pd.read_csv(f)); display(pd.read_csv(R / f'{part}_{form}_paired.csv'))\n"
+      "    print(json.dumps(json.loads((R / f'{part}_{form}_summary.json').read_text()), indent=1)[:3000])",
+      "for f in ['fig16_continuous_eval.png']:\n"
+      "    p = Path('results/figures') / f\n    display(Image(str(p))) if p.exists() else print('missing', p)",
+      "# 4. Streamlit prototype: run locally with  streamlit run app/streamlit_app.py\n"
+      "# (in Colab, Streamlit needs a tunnel; the back-end used above is the same code: mcq_profiles.dashboard)"]),
+    ("10_temporal_regimes", "Latent time regimes vs flexible continuous time distributions (option C)",
+     "Test, falsifiably, whether the residual time heterogeneity reflects discrete latent time regimes or a continuous "
+     "non-normal distribution: spline (GAM-type) location and variance, skew-normal, Student t and sinh-arcsinh residuals "
+     "versus K = 2, 3 regimes with ordered intercepts and ability-dependent prevalence, all conditional on the same IRT "
+     "response model. Null simulations, positive control, bootstrap stability, and an independent test on Forms B and C.",
+     ["# 1. Synthetic demonstration: regimes are found when present and not when the distribution is merely skewed\n"
+      "import numpy as np\nfrom scipy.special import expit\nfrom scipy.stats import skewnorm\n"
+      "from mcq_profiles.latent_classes import ContinuousIRT\n"
+      "from mcq_profiles.temporal import ContinuousTimeModel, RegimeTimeModel, item_loglik_grid\n"
+      "rng = np.random.default_rng(0); n, J = 3000, 20\n"
+      "m = ContinuousIRT(dims=1, guessing=True); m.A = rng.uniform(0.8, 1.8, (J, 1)); m.d = rng.normal(0, 1, J); m.c = rng.uniform(.05, .2, J)\n"
+      "th = rng.normal(size=n); Y = (rng.random((n, J)) < m.c + (1 - m.c) * expit(th[:, None] * m.A[:, 0] + m.d)).astype(float)\n"
+      "LY = item_loglik_grid(m, Y); g = np.zeros(n, int); x = m.X[:, 0]\n"
+      "for name, v in [('true regimes', -0.3 * th + np.where(rng.random(n) < .3, 1.2, 0) + .3 * rng.normal(size=n)),\n"
+      "                ('skewed continuum', -0.3 * th + .5 * skewnorm.rvs(4, size=n, random_state=1))]:\n"
+      "    c = ContinuousTimeModel('shash', 'spline', 'spline').fit(LY, v, g, x)\n"
+      "    r = RegimeTimeModel(2, n_starts=3).fit(LY, v, g, x)\n"
+      "    print(f'{name:18s} BIC continuous {c.bic():8.1f}  BIC 2 regimes {r.bic():8.1f}  ->', 'regimes' if r.bic() < c.bic() else 'continuous')",
+      "# 2. Real analysis (needs the PISA extracts): development, nulls, bootstrap, confirmation\n"
+      "import subprocess, sys\n"
+      "if not DEMO:\n"
+      "    for args in [['--part', 'dev'], ['--part', 'null'], ['--part', 'boot'], ['--part', 'confirm', '--form', 'math_formB'],\n"
+      "                 ['--part', 'confirm', '--form', 'math_formC']]:\n"
+      "        r = subprocess.run([sys.executable, 'scripts/run_temporal.py'] + args, capture_output=True, text=True)\n"
+      "        print(r.stdout[-3000:]); r.check_returncode()",
+      "# 3. Saved PISA 2025 results\n"
+      "import json, pandas as pd\nfrom pathlib import Path\nfrom IPython.display import display, Markdown, Image\n"
+      "R = Path('results/temporal')\n"
+      "for f in sorted(R.glob('*.csv')):\n    display(Markdown(f'**{f.name}**')); display(pd.read_csv(f))\n"
+      "for f in sorted(R.glob('*.json')):\n    display(Markdown(f'**{f.name}**')); print(json.dumps(json.loads(f.read_text()), indent=1)[:3000])",
+      "p = Path('results/figures/fig17_temporal_regimes.png')\ndisplay(Image(str(p))) if p.exists() else print('missing', p)",
+      "p = Path('reports/temporal_regimes_report.md')\ndisplay(Markdown(p.read_text(encoding='utf8'))) if p.exists() else print('missing', p)"]),
 ]
 
 
