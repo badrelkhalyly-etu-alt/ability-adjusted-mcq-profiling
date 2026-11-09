@@ -7,16 +7,4 @@ entering extended mode
 Latexmk: Getting log file 'article.log'
 Latexmk: Using bibtex to make bibliography file(s).
   ===Source file 'article.bbl' for 'pdflatex'
-Latexmk: Run number 1 of rule 'bibtex article'
-This is BibTeX, Version 0.99e (MiKTeX 26.2)
-The top-level auxiliary file: article.aux
-The style file: apalike.bst
-Database file #1: references.bib
-Latexmk: Run number 2 of rule 'pdflatex'
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex.fmt)
- restricted \write18 enabled.
-entering extended mode
-Latexmk: Getting log file 'article.log'
-Latexmk: Using bibtex to make bibliography file(s).
-  ===Source file 'article.bbl' for 'pdflatex'
 
