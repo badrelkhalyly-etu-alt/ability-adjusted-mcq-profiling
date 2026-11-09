@@ -724,3 +724,36 @@ def stage_contingency(form, demo=False):
     out["profile_names"] = {int(k): v for k, v in names.items()}
     save_json(out, f"{form}_contingency.json")
     (RES.parent / "manuscript" / "tables" / f"{form}_contingency.tex").write_text("\n\n".join(tex), encoding="utf-8")
+
+
+# ------------------------------------------------------------------ continuous competitors on replication forms (exploratory, deviation log)
+def _fit_comp(nm, kw, Ytr, demo):
+    from mcq_profiles.latent_classes import ContinuousIRT
+    t0 = time.time()
+    m = ContinuousIRT(**kw, max_iter=1500 if not demo else 100).fit(Ytr)
+    return nm, m, time.time() - t0
+
+
+def stage_competitors(form, demo=False):
+    ck = load_ckpt(form)
+    df, _ = load_form(form, demo)
+    Y, *_ = arrays(df)
+    tr = ck["tr"]
+    Ytr = Y[tr]
+    n = tr.sum()
+    specs = [("MIRT2", dict(dims=2)), ("G3PL", dict(dims=1, guessing=True)), ("MIRT2G", dict(dims=2, guessing=True))]
+    out = Parallel(n_jobs=3)(delayed(_fit_comp)(nm, kw, Ytr, demo) for nm, kw in specs)
+    comps = {nm: m for nm, m, _ in out}
+    for nm, m, s in out:
+        log(f"{form} {nm}: ll={m.result_.loglik:.2f} k={m.result_.n_params} conv={m.result_.converged} {s:.0f}s")
+    with open(CKPT / f"{form}_competitors.pkl", "wb") as f:
+        pickle.dump(comps, f)
+    B = {k: float(bic(m, n)) for k, m in ck["models"].items() if not m.duration}
+    B.update({k: float(m.bic(n)) for k, m in comps.items()})
+    best = min(B, key=B.get)
+    res = dict(n_train=int(n), bic_train=B, best=best,
+               dBIC_bestM1_vs_A=min(B["A2"], B["A3"], B["M0"]) - min(B["M1_2"], B["M1_3"]),
+               dBIC_bestM1_vs_G3PL=B["G3PL"] - min(B["M1_2"], B["M1_3"]),
+               dBIC_bestM1_vs_bestcontinuous=min(B[k] for k in ["M0", "A2", "A3", "MIRT2", "G3PL", "MIRT2G"]) - min(B["M1_2"], B["M1_3"]))
+    save_json(res, f"{form}_competitors.json")
+    log(form, "competitors", res)
