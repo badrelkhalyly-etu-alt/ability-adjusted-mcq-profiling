@@ -35,7 +35,7 @@ The submission version is `manuscript/access.tex` → `manuscript/access.pdf`: I
 ## 3. Remaining publication risks, by severity
 
 ### Blocking
-1. **Authorship.** The paper is now framed on PISA 2025 alone (authors' decision, 9 November 2026); N. Safeh's unpublished manuscript is cited once, as the origin of the question. The author list must still be completed. `CITATION.cff` and the manuscript author block are placeholders.
+1. **Authorship.** The paper is now framed on PISA 2025 alone (authors' decision, 9 November 2026); N. Safeh's unpublished manuscript is cited once, as the origin of the question. Author list set on 9 November 2026: N. Safeh, B. El Khalyly, A. Yalid, A. Belkhadim, Z. Ibn Batouta; corresponding authors B. El Khalyly and N. Safeh. Affiliations of three authors, biographies and funding remain to be completed. `CITATION.cff` and the manuscript author block are placeholders.
 2. **Pre-registration status.** The protocol was frozen in a local git commit, not on a public registry (OSF/AsPredicted). Reviewers may discount the "pre-registered" label. Either describe it as an "internally frozen protocol with a timestamped commit" or publish the repository history.
 3. **Post-hoc competitors.** The decisive comparisons (G3PL, MIRT2, MIRT2G) were added after the Form A results were seen. Forms B and C mitigate this: when the competitors were added, their outcome on those forms was unknown. It must still be stated prominently, and ideally confirmed on a further form or cycle.
 

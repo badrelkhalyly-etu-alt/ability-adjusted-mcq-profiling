@@ -5,7 +5,16 @@ version: 0.1.0
 date-released: 2026-11-08
 license: MIT
 authors:
-  - name: "TO BE CONFIRMED (repository owner)"
+  - family-names: Safeh
+    given-names: Nisrine
+  - family-names: El Khalyly
+    given-names: Badr
+  - family-names: Yalid
+    given-names: Amal
+  - family-names: Belkhadim
+    given-names: Ahmed
+  - family-names: Ibn Batouta
+    given-names: Zouhair
 references:
   - type: article
     title: "Beyond the Score: Behavioural Profiles from Minimal Process Data in Online Multiple-Choice Examinations"
