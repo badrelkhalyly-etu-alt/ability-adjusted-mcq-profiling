@@ -4,16 +4,26 @@
 
 **Publication readiness: not yet submittable.** The science is complete and coherent as a methodological and negative-results paper. Authorship, data permissions and several robustness items must be settled first.
 
-## 1. Recommended framing and target
-The paper is publishable as **"why score–time profiles from minimal process data are not evidence of student types: a null-calibrated, pre-registered protocol"**. It is not publishable as a new profiling method.
+## 1. Target journal: IEEE Access (authors' choice, 9 November 2026)
+The paper is publishable as **"why score–time profiles from minimal process data are not evidence of student types: a null-calibrated protocol"**. It is not publishable as a new profiling method.
 
-| Rank | Journal | Why it fits | Main risk |
-|---|---|---|---|
-| 1 | *Educational and Psychological Measurement* (Sage; SJR Q1) | Simulation + empirical design; negative results welcome when the method has demonstrated power (we have E6) | Read as a routine mixture-IRT application. Lead with the null-calibration and continuous-competitor findings |
-| 2 | *Large-scale Assessments in Education* (IEA/Springer; SJR Q1, no APC) | PISA data; its scope welcomes evidence that "meaningfully changes confidence in an established finding" | Requires weights, plausible-value and design treatment. PISA must not look like a convenient testbed |
-| 3 | *Journal of Learning Analytics* / *Computers & Education* (see `journal_strategy.md`) | Practitioner implication for profile dashboards | Expects pedagogical outcomes, which we do not have |
+The submission version is `manuscript/access.tex` → `manuscript/access.pdf`: IEEE Access two-column class, 17 pages. The single-column preprint `article.tex` shares the same sections, tables and figures.
 
-All quartiles are SJR (Scopus). **No JCR quartile was verified** (see `journal_strategy.md`).
+| IEEE Access requirement | Status |
+|---|---|
+| Single-paragraph abstract, ≤ 250 words, no citations or equations | Done (`sections/abstract_ieee.tex`, 239 words) |
+| Index terms (keywords) | Done (9 terms) |
+| IEEE numeric reference style | Done (`IEEEtranN`; author–year commands map to numbers) |
+| Template class | `ieeeaccess.cls`, taken from a public copy of the IEEE Access LaTeX template. **Replace it with the current official template from template-selector.ieee.org before submission** |
+| Author names, affiliations, corresponding author, funding footnote | **Placeholders**: authorship not yet agreed |
+| Biography (and photograph) for every author | **Placeholder**: to be written by each author |
+| Article processing charge (open access) | Not verified here; check the current amount on the IEEE Access website |
+| Journal quartile / impact factor | **Not verified**. A secondary source reports a 2025 JIF of 4.2 and a CiteScore of 9.3, but not the quartile. Check JCR and Scopus before relying on a "Q1" claim; the category matters |
+
+**Fit and risk.** IEEE Access is a broad, multidisciplinary engineering journal with a binary accept/reject decision and fast review. It publishes educational data mining and learning analytics work. Main risks:
+1. Reviewers outside psychometrics may read a negative result as "nothing found". The introduction and abstract must lead with the engineering message: a profiling feature built into e-assessment platforms produces spurious types, and here is a protocol to test it.
+2. The mixture-IRT notation is dense for this readership. Keep the model ladder table and move derivations to the supplementary material if reviewers ask.
+3. Length: 17 two-column pages. Contingency tables and part of E8/E9 can move to supplementary material if needed.
 
 ## 2. Strengths reviewers will credit
 - A frozen protocol (commit `e54a29f`) with an explicit deviation log, and a test set evaluated once.
@@ -30,11 +40,11 @@ All quartiles are SJR (Scopus). **No JCR quartile was verified** (see `journal_s
 3. **Post-hoc competitors.** The decisive comparisons (G3PL, MIRT2, MIRT2G) were added after the Form A results were seen. Forms B and C mitigate this: when the competitors were added, their outcome on those forms was unknown. It must still be stated prominently, and ideally confirmed on a further form or cycle.
 
 ### Major
-4. **Sampling design.** Model fitting ignores weights and clustering, and plausible values are not used. This is defensible for structural questions, but LSA-type journals will ask for it. A weighted sensitivity fit is needed.
-5. **Duration model.** The duration null is linear in θ. The large duration ΔBIC (2,090) has not been tested against a continuous model with a non-linear time–ability regression. Add that competitor: a spline in θ within M2.
+4. **Sampling design.** Done in part (Section "Sensitivity analyses"). A weighted pseudo-likelihood favours M1_3 with the nominal n but not with the Kish effective n (518–614), and the weighted classes change across forms. Reviewers may still ask for a design-based treatment of clustering, which has no standard for mixture IRT. The ESS rescaling is post hoc and must be presented as such.
+5. **Duration model.** Done: a cubic, heteroscedastic M2 explains roughly 70–75 % of the duration ΔBIC, but class duration models still lead by 497–958. The paper now says the remainder is unresolved (discrete classes or a non-normal continuous speed distribution). A reviewer may ask for the second model.
 6. **Model space.** No residual speed–accuracy model (Bolsinova et al.) and no item-position model was fitted. The class models allow only difficulty shifts.
 7. **Simulation scope.** The null and positive-control designs are tied to Form A (22 items, n ≈ 4,000). EPM reviewers will want factors such as test length, N and the RT–ability correlation.
-8. **Not-reached sensitivity.** The protocol lists scoring not-reached as incorrect as a sensitivity analysis, but it is not yet reported in the manuscript.
+8. **Not-reached sensitivity.** Done: the conclusion is unchanged on all three forms.
 
 ### Minor
 9. Starts per fit: 5 on real data and 3 in simulations. 8 of 480 null fits did not converge (flagged).
@@ -45,6 +55,6 @@ All quartiles are SJR (Scopus). **No JCR quartile was verified** (see `journal_s
 
 ## 4. Path to submission (estimated work)
 1. Settle authorship and consent with N. Safeh. Decide the repository visibility.
-2. Add a weighted fit, a non-linear duration competitor and the not-reached sensitivity analysis. Each reuses existing code (≈ 1–2 days of compute).
+2. Done: weighted fit, non-linear duration competitor and not-reached sensitivity analysis (training data only). Optional: a non-normal continuous speed model for the duration remainder.
 3. Optionally extend the simulation factors for EPM.
 4. Re-verify the references, then prepare the cover letter around verdict C and its alternative question.

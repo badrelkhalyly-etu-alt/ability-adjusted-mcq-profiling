@@ -1,0 +1,28 @@
+{
+  "n_train": 420,
+  "n_weight_missing": 0,
+  "best": {
+    "duration": "M2_poly3h",
+    "reference": "M0"
+  },
+  "reference_dBIC_G3PL_minus_bestM1": 15.118873957979304,
+  "reference_dBIC_bestA_or_M0_minus_bestM1": -61.30022160193221,
+  "duration": {
+    "M2_linear": 6326.382530015631,
+    "M2_poly3h": 6338.645132552683,
+    "M3_2_linear": 6393.18153326118,
+    "M3_2_poly3h": 6417.896037937349,
+    "M3_3_linear": 6470.19455662298,
+    "M3_3_poly3h": 6507.828868590961,
+    "dBIC_M2linear_minus_M3_2linear": -66.7990032455491,
+    "dBIC_M2poly_minus_M3_2poly": -79.25090538466611,
+    "dBIC_M2poly_minus_M3_3poly": -169.18373603827786,
+    "dBIC_M2linear_minus_M2poly": -12.262602537051862,
+    "response_only_dBIC_M0_minus_M1_2": -61.30022160193221
+  },
+  "reference_M1_3_class_props": [
+    0.456,
+    0.219,
+    0.326
+  ]
+}

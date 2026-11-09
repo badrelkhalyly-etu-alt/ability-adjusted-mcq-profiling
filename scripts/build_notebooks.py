@@ -151,7 +151,9 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       "RUN_ROBUSTNESS = DEMO\n"
       "if RUN_ROBUSTNESS:\n    run('robustness', FORM)",
       "for f in ['math_formA', 'math_formB', 'math_formC']:\n"
-      "    display(Markdown(f'**{f}**')); show_json(f'{f}_robustness.json'); show_csv(f'{f}_robustness.csv')"]),
+      "    display(Markdown(f'**{f}**')); show_json(f'{f}_robustness.json'); show_csv(f'{f}_robustness.csv')",
+      "# Summary used by Table tab:robustness, and sampling-weight diagnostics (Kish effective n, ESS-rescaled BIC)\n"
+      "show_csv('robustness_summary.csv'); show_json('weight_diagnostics.json')"]),
     ("08_figures_results", "Figures, tables, verdict and reproducibility report",
      "Rebuild every figure and table from the saved outputs, then display the scientific verdict and the Q1-readiness assessment.",
      ["import subprocess, sys\n"

@@ -1,0 +1,13 @@
+quantity,math_formA,math_formB,math_formC
+resp_reference,39.8622,25.2556,86.3037
+resp_nr_incorrect,81.9391,41.8195,63.0080
+resp_weighted_nominal,-547.2525,-155.6804,-141.3869
+resp_weighted_ess,18.9000,29.3000,83.6000
+dur_M3_2_vs_M2_linear,-2089.7803,-2264.0224,-1885.2152
+dur_M3_2_vs_M2_cubic,-647.6726,-551.7680,-497.3996
+dur_M3_3_vs_M2_cubic,-958.3087,-743.6097,-620.5055
+dur_M2_cubic_vs_linear,-1502.9783,-2018.8930,-1562.4910
+dev_corr_nr_incorrect,0.9320,0.9990,0.7086
+dev_corr_weighted,0.5589,-0.3879,0.1058
+min_class_prop_weighted,0.0430,0.0470,0.0250
+kish_ess,518.3000,562.0000,614.1000

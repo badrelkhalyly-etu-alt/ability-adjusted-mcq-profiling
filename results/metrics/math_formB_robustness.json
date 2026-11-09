@@ -1,0 +1,46 @@
+{
+  "n_train": 3767,
+  "n_weight_missing": 0,
+  "best": {
+    "duration": "M3_3_poly3h",
+    "nr_incorrect": "MIRT2G",
+    "weighted": "M1_3",
+    "reference": "G3PL"
+  },
+  "reference_dBIC_G3PL_minus_bestM1": -25.25563135613629,
+  "reference_dBIC_bestA_or_M0_minus_bestM1": 447.17466975525895,
+  "nr_incorrect_dBIC_G3PL_minus_bestM1": -1.3313777500734432,
+  "nr_incorrect_dBIC_bestA_or_M0_minus_bestM1": 393.23211384471506,
+  "weighted_dBIC_G3PL_minus_bestM1": 437.9553412710811,
+  "weighted_dBIC_bestA_or_M0_minus_bestM1": 1221.192268715662,
+  "duration": {
+    "M2_linear": 96301.99124225938,
+    "M2_poly3h": 94283.09821342595,
+    "M3_2_linear": 94037.9688049826,
+    "M3_2_poly3h": 93731.33017574919,
+    "M3_3_linear": 93724.43733236898,
+    "M3_3_poly3h": 93539.48847953511,
+    "dBIC_M2linear_minus_M3_2linear": 2264.02243727677,
+    "dBIC_M2poly_minus_M3_2poly": 551.7680376767676,
+    "dBIC_M2poly_minus_M3_3poly": 743.6097338908439,
+    "dBIC_M2linear_minus_M2poly": 2018.8930288334232,
+    "response_only_dBIC_M0_minus_M1_2": 489.9009226892813
+  },
+  "weighted_M1_3_dev_corr_with_reference": -0.38789115415493647,
+  "weighted_M1_3_class_props": [
+    0.81,
+    0.047,
+    0.143
+  ],
+  "nr_incorrect_M1_3_dev_corr_with_reference": 0.9990014496877603,
+  "nr_incorrect_M1_3_class_props": [
+    0.269,
+    0.3,
+    0.43
+  ],
+  "reference_M1_3_class_props": [
+    0.275,
+    0.291,
+    0.434
+  ]
+}

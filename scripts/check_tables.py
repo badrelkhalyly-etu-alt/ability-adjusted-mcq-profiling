@@ -119,4 +119,17 @@ for t, b in zip(names, blocks):
         for rk, val in d.items():
             if c.loc[type(c.index[0])(rk) if not isinstance(c.index[0], str) else rk, col] != val: print('ct json mismatch', t, rk, col)
     report('ct ' + t, n, bad)
+# robustness summary
+rs = pd.read_csv(T + 'robustness_summary.csv', index_col=0)
+keys = ['resp_reference', 'resp_nr_incorrect', 'resp_weighted_nominal', 'resp_weighted_ess',
+        'dur_M3_2_vs_M2_linear', 'dur_M3_2_vs_M2_cubic', 'dur_M3_3_vs_M2_cubic', 'dur_M2_cubic_vs_linear',
+        'dev_corr_nr_incorrect', 'dev_corr_weighted', 'min_class_prop_weighted', 'kish_ess']
+R = [r for r in rows('manuscript/tables/tab_robustness.tex') if len(r) == 4]; bad = 0; n = 0
+for r, k in zip(R, keys):
+    for v, f in zip(r[1:], ['math_formA', 'math_formB', 'math_formC']):
+        x = rs.loc[k, f]
+        e = ('%.2f' % x) if k.startswith(('dev_', 'min_')) else ('%.0f' % x)
+        n += 1
+        if v.replace('$-$', '-') != e: bad += 1; print('robustness', k, f, v, e)
+print('robustness rows', len(R), len(keys)); report('robustness', n, bad)
 print('TOTAL table cells', tot)

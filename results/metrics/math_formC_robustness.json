@@ -1,0 +1,46 @@
+{
+  "n_train": 3363,
+  "n_weight_missing": 0,
+  "best": {
+    "duration": "M3_3_poly3h",
+    "nr_incorrect": "G3PL",
+    "weighted": "M1_3",
+    "reference": "G3PL"
+  },
+  "reference_dBIC_G3PL_minus_bestM1": -86.30368533890578,
+  "reference_dBIC_bestA_or_M0_minus_bestM1": 155.70636023803672,
+  "nr_incorrect_dBIC_G3PL_minus_bestM1": -63.007978284324054,
+  "nr_incorrect_dBIC_bestA_or_M0_minus_bestM1": 113.93597166363907,
+  "weighted_dBIC_G3PL_minus_bestM1": 185.30527760417317,
+  "weighted_dBIC_bestA_or_M0_minus_bestM1": 531.2508651018579,
+  "duration": {
+    "M2_linear": 99334.53773881016,
+    "M2_poly3h": 97772.04673092284,
+    "M3_2_linear": 97449.32256219492,
+    "M3_2_poly3h": 97274.6471458942,
+    "M3_3_linear": 97321.37622668844,
+    "M3_3_poly3h": 97151.54118206157,
+    "dBIC_M2linear_minus_M3_2linear": 1885.2151766152383,
+    "dBIC_M2poly_minus_M3_2poly": 497.39958502864465,
+    "dBIC_M2poly_minus_M3_3poly": 620.5055488612707,
+    "dBIC_M2linear_minus_M2poly": 1562.4910078873218,
+    "response_only_dBIC_M0_minus_M1_2": 291.30682762489596
+  },
+  "weighted_M1_3_dev_corr_with_reference": 0.1058117248334051,
+  "weighted_M1_3_class_props": [
+    0.454,
+    0.521,
+    0.025
+  ],
+  "nr_incorrect_M1_3_dev_corr_with_reference": 0.7086428465170791,
+  "nr_incorrect_M1_3_class_props": [
+    0.328,
+    0.319,
+    0.353
+  ],
+  "reference_M1_3_class_props": [
+    0.319,
+    0.283,
+    0.398
+  ]
+}

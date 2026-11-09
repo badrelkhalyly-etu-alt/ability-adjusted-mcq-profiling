@@ -1,0 +1,32 @@
+08:18:24 math_formA robustness
+         variant        model        loglik    k  conv         secs           BIC  dBIC_within_variant
+0       duration  M3_3_poly3h -44638.426440  110  True  1250.055984  90188.646962             0.000000
+1       duration  M3_2_poly3h -44918.080051   80  True   387.376488  90499.283070           310.636109
+16      duration    M2_poly3h -45345.529317   55  True    15.689274  91146.955674           958.308712
+8   nr_incorrect         G3PL -43635.794235   66  True     2.022919  87818.664918             0.000000
+2   nr_incorrect       MIRT2G -43550.285717   87  True    50.534778  87821.717662             3.052744
+7   nr_incorrect         M1_3 -43569.006303   92  True    44.949744  87900.604019            81.939101
+6   nr_incorrect         M1_2 -43696.150545   68  True    34.510780  87955.955613           137.290695
+9   nr_incorrect        MIRT2 -43802.876225   65  True    18.669712  88144.539861           325.874944
+5   nr_incorrect           A2 -43989.526034   47  True    91.703774  88368.636812           549.971894
+4   nr_incorrect           M0 -44036.107001   44  True     0.177944  88436.931635           618.266717
+27     reference         G3PL -43107.706752   66  True          NaN  86762.489953             0.000000
+28     reference       MIRT2G -43029.524288   87  True          NaN  86780.194803            17.704850
+20     reference         M1_3 -43019.880361   92  True          NaN  86802.352135            39.862182
+19     reference         M1_2 -43193.425907   68  True          NaN  86950.506336           188.016383
+26     reference        MIRT2 -43318.206191   65  True          NaN  87175.199793           412.709841
+18     reference           A2 -43487.581617   47  True          NaN  87364.747979           602.258026
+17     reference           M0 -43551.675213   44  True          NaN  87468.068059           705.578106
+23     reference         M3_3 -44727.166362  101  True          NaN  90291.525470          3529.035517
+25     reference         M4_3 -44690.435381  116  True          NaN  90342.399066          3579.909113
+22     reference         M3_2 -44973.382471   74  True          NaN  90560.153687          3797.663734
+24     reference         M4_2 -44951.028835   84  True          NaN  90598.336785          3835.846833
+21     reference           M2 -46109.452012   52  True          NaN  92649.933953          5887.444000
+13      weighted         M1_3 -40649.531582   92  True    56.046932  82061.654577             0.000000
+3       weighted       MIRT2G -40943.880435   87  True    36.062441  82608.907098           547.252520
+14      weighted         G3PL -41199.547182   66  True     2.677076  82946.170813           884.516235
+12      weighted         M1_2 -41224.069753   68  True    34.855820  83011.794028           950.139450
+15      weighted        MIRT2 -41495.842341   65  True     8.574668  83530.472093          1468.817516
+11      weighted           A2 -41689.134933   47  True    49.718069  83767.854609          1706.200032
+10      weighted           M0 -41818.980714   44  True     0.165234  84002.679060          1941.024483
+{'n_train': 3980, 'n_weight_missing': 0, 'best': {'duration': 'M3_3_poly3h', 'nr_incorrect': 'G3PL', 'weighted': 'M1_3', 'reference': 'G3PL'}, 'reference_dBIC_G3PL_minus_bestM1': -39.86218226287747, 'reference_dBIC_bestA_or_M0_minus_bestM1': 562.3958435610257, 'nr_incorrect_dBIC_G3PL_minus_bestM1': -81.93910123189562, 'nr_incorrect_dBIC_bestA_or_M0_minus_bestM1': 468.0327930880012, 'weighted_dBIC_G3PL_minus_bestM1': 884.516235338524, 'weighted_dBIC_bestA_or_M0_minus_bestM1': 1706.2000317974598, 'duration': {'M2_linear': 92649.93395320355, 'M2_poly3h': 91146.9556738504, 'M3_2_linear': 90560.15368718254, 'M3_2_poly3h': 90499.28307047939, 'M3_3_linear': 90291.52547024914, 'M3_3_poly3h': 90188.6469616468, 'dBIC_M2linear_minus_M3_2linear': 2089.7802660210145, 'dBIC_M2poly_minus_M3_2poly': 647.6726033710147, 'dBIC_M2poly_minus_M3_3poly': 958.3087122036086, 'dBIC_M2linear_minus_M2poly': 1502.9782793531485, 'response_only_dBIC_M0_minus_M1_2': 517.5617231248325}, 'weighted_M1_3_dev_corr_with_reference': 0.5588650999469292, 'weighted_M1_3_class_props': [0.043, 0.825, 0.132], 'nr_incorrect_M1_3_dev_corr_with_reference': 0.9319623438197432, 'nr_incorrect_M1_3_class_props': [0.43, 0.299, 0.27], 'reference_M1_3_class_props': [0.564, 0.278, 0.158]}

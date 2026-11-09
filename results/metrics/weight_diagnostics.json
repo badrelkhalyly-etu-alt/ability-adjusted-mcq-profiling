@@ -1,0 +1,107 @@
+{
+ "math_formA": {
+  "n": 3980,
+  "n_countries": 82,
+  "kish_ess": 518.3,
+  "ess_ratio": 0.13,
+  "max_over_median_w": 245.4,
+  "top3_country_weight_share": [
+   [
+    "IDN",
+    0.146,
+    79
+   ],
+   [
+    "USA",
+    0.111,
+    25
+   ],
+   [
+    "PHL",
+    0.073,
+    57
+   ]
+  ],
+  "ess_scaled_BIC": {
+   "MIRT2G": 11207.8,
+   "M0": 11166.9,
+   "A2": 11151.9,
+   "M1_2": 11162.0,
+   "M1_3": 11162.4,
+   "G3PL": 11143.1,
+   "MIRT2": 11214.0
+  },
+  "ess_scaled_dBIC_G3PL_minus_bestM1": -18.9,
+  "ess_scaled_dBIC_MIRT2G_minus_bestM1": 45.8
+ },
+ "math_formB": {
+  "n": 3767,
+  "n_countries": 80,
+  "kish_ess": 562.0,
+  "ess_ratio": 0.149,
+  "max_over_median_w": 242.3,
+  "top3_country_weight_share": [
+   [
+    "IDN",
+    0.12,
+    72
+   ],
+   [
+    "USA",
+    0.093,
+    19
+   ],
+   [
+    "BRA",
+    0.078,
+    170
+   ]
+  ],
+  "ess_scaled_BIC": {
+   "MIRT2G": 13828.2,
+   "M0": 13771.4,
+   "A2": 13752.4,
+   "M1_2": 13777.2,
+   "M1_3": 13830.5,
+   "G3PL": 13747.9,
+   "MIRT2": 13843.7
+  },
+  "ess_scaled_dBIC_G3PL_minus_bestM1": -29.4,
+  "ess_scaled_dBIC_MIRT2G_minus_bestM1": 51.0
+ },
+ "math_formC": {
+  "n": 3363,
+  "n_countries": 76,
+  "kish_ess": 614.1,
+  "ess_ratio": 0.183,
+  "max_over_median_w": 118.4,
+  "top3_country_weight_share": [
+   [
+    "IDN",
+    0.141,
+    74
+   ],
+   [
+    "USA",
+    0.108,
+    23
+   ],
+   [
+    "BRA",
+    0.08,
+    164
+   ]
+  ],
+  "ess_scaled_BIC": {
+   "MIRT2G": 17089.9,
+   "M0": 16961.2,
+   "A2": 16914.2,
+   "M1_2": 16997.8,
+   "M1_3": 17088.8,
+   "G3PL": 16969.5,
+   "MIRT2": 17076.3
+  },
+  "ess_scaled_dBIC_G3PL_minus_bestM1": -28.3,
+  "ess_scaled_dBIC_MIRT2G_minus_bestM1": 92.1
+ }
+}

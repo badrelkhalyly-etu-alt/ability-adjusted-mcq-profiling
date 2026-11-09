@@ -155,3 +155,12 @@ Psychological or affective labels (anxious, bored, disengaged) for classes. EFFO
 - First E10 run crashed while fitting the K-means score–time predictor on the **training** split: students whose unmasked items carry zero total time gave log(0) = −inf, which passed the NaN filter. The crash happened before any test-set prediction was scored, and no test metric was computed or written.
 - Fix: the filter now requires finite features (`np.isfinite`). Such students fall back to the marginal item p-values, which is the rule already used for students with no time. Nothing else changed.
 - 2026-11-09: Continuous competitors (MIRT2, G3PL, MIRT2G) are also fitted on the training splits of replication Forms B and C (`stage_competitors`). On Form A, G3PL beat every class model, so the replication check must use the same model space. This stage is exploratory and was added after Form A's results were known.
+
+### Deviation log — 2026-11-09 (after all main results, including the single test-set evaluation)
+- **E6 reduced design.** The positive-control design crosses shift magnitude, class proportion and N (3 × 2 × 2 = 12 cells). Informative duration is added only at the 1.0-logit shift (4 more cells), giving 16 cells and 160 datasets instead of the full crossing. Reason: computing time.
+- **Robustness stage (`stage_robustness`, exploratory, training splits of Forms A, B, C only; the test set was not re-evaluated).**
+  1. Not-reached items scored incorrect (the sensitivity analysis listed in §6), refitting M0, A2, M1_2, M1_3, G3PL, MIRT2 and MIRT2G.
+  2. Weighted pseudo-likelihood fits of the same models with `W_FSTUWT` rescaled to mean 1. Post-hoc diagnostic (`scripts/weight_diagnostics.py`): Kish effective n and BIC with the weights rescaled to that effective n. Neither was pre-specified.
+  3. Continuous duration competitor: M2 with a cubic mean in θ and log residual SD linear in θ, plus the same duration model inside M3_2 and M3_3 (`MixIRTDurPoly`).
+  Reason: the robustness items listed in `reports/q1_readiness.md` (sampling design, linear duration null, not-reached scoring).
+- **Submission format.** An IEEE Access version (`manuscript/access.tex`) shares the sections, tables and figures of `article.tex`; only the abstract was rewritten to the journal's rules.
