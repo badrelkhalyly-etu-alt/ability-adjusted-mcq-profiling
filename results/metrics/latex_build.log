@@ -1,0 +1,10 @@
+Rc files read (in order):
+  NONE
+Latexmk: Run number 1 of rule 'pdflatex'
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.2) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+Latexmk: Getting log file 'article.log'
+Latexmk: Using bibtex to make bibliography file(s).
+  ===Source file 'article.bbl' for 'pdflatex'
+

@@ -1,0 +1,108 @@
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:292: RuntimeWarning: Mean of empty slice
+  lam = np.nanmean(LT[tr], 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:293: RuntimeWarning: Mean of empty slice
+  tau = np.nanmean(lam[None, :] - LT, 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:292: RuntimeWarning: Mean of empty slice
+  lam = np.nanmean(LT[tr], 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:293: RuntimeWarning: Mean of empty slice
+  tau = np.nanmean(lam[None, :] - LT, 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:292: RuntimeWarning: Mean of empty slice
+  lam = np.nanmean(LT[tr], 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:293: RuntimeWarning: Mean of empty slice
+  tau = np.nanmean(lam[None, :] - LT, 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:292: RuntimeWarning: Mean of empty slice
+  lam = np.nanmean(LT[tr], 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:293: RuntimeWarning: Mean of empty slice
+  tau = np.nanmean(lam[None, :] - LT, 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:292: RuntimeWarning: Mean of empty slice
+  lam = np.nanmean(LT[tr], 0)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\scripts\experiment_stages.py:293: RuntimeWarning: Mean of empty slice
+  tau = np.nanmean(lam[None, :] - LT, 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:113: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:114: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:125: RuntimeWarning: Mean of empty slice
+  s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
+C:\Users\badre\Downloads\safeh paper\ability-adjusted-mcq-profiling\src\mcq_profiles\baseline.py:126: RuntimeWarning: divide by zero encountered in log
+  X = np.column_stack([s, np.log(minutes)])
+04:16:52 E10
+                 model   logloss     brier       ece
+13           M3_3_time  0.491682  0.163660  0.012166
+15          M3_2_speed  0.493499  0.164147  0.013675
+10              MIRT2G  0.493630  0.164279  0.011209
+7                 M1_3  0.494040  0.164497  0.010583
+12           M3_2_time  0.494045  0.164388  0.014035
+9                 G3PL  0.494928  0.164772  0.011723
+2                LCA_4  0.495558  0.165084  0.011015
+6                 M1_2  0.496020  0.165244  0.011798
+8                MIRT2  0.498010  0.165929  0.015809
+14            M2_speed  0.500028  0.166871  0.019017
+11             M2_time  0.500294  0.166964  0.018219
+5                   A3  0.500920  0.167085  0.016876
+4                   A2  0.501037  0.167166  0.016919
+3                   M0  0.501616  0.167396  0.017743
+1   KMeans4_score_time  0.522435  0.175729  0.010387
+0             Marginal  0.606133  0.209903  0.006687
+        better                than  gain_nats_per_item     ci_lo     ci_hi
+0           M0            Marginal            0.104804  0.097065  0.113255
+1           M0  KMeans4_score_time            0.020991  0.017297  0.024848
+2         M1_2                  M0            0.005564  0.003935  0.007182
+3         M1_3                  M0            0.007545  0.005932  0.009106
+4           A2                  M0            0.000567  0.000055  0.001089
+5         M1_2                  A2            0.004997  0.003543  0.006478
+6         M1_3                  A2            0.006977  0.005332  0.008522
+7      M2_time                  M0            0.001482  0.000911  0.002089
+8    M3_2_time                M1_2            0.002119  0.001006  0.003240
+9    M3_3_time                M1_3            0.002481  0.001122  0.003906
+10   M3_2_time             M2_time            0.006201  0.004596  0.007798
+11          M0               LCA_4           -0.006020 -0.007904 -0.004145
+12    M2_speed                  M0            0.001721  0.001073  0.002394
+13    M2_speed             M2_time            0.000239 -0.000026  0.000471
+14  M3_2_speed            M2_speed            0.006484  0.004951  0.008032
+15       MIRT2                  M0            0.003525  0.002232  0.004896
+16        M1_3               MIRT2            0.004019  0.002452  0.005609
+17        M1_2               MIRT2            0.002039  0.000683  0.003325
+18        G3PL                  M0            0.006656  0.005021  0.008259
+19        M1_2                G3PL           -0.001092 -0.002222  0.000022
+20        M1_3                G3PL            0.000888 -0.000429  0.002287
+21      MIRT2G                  M0            0.007937  0.006227  0.009603
+22        M1_3              MIRT2G           -0.000392 -0.001611  0.000813
+       seed      cond      marg     n
+0  20261108 -0.684312 -0.773198  1677
+1  20261109 -0.637152 -0.717046  1677
+2  20261110 -0.646163 -0.699702  1677
+3  20261111 -0.704290 -0.785000  1677
+4  20261112 -0.617947 -0.695445  1677

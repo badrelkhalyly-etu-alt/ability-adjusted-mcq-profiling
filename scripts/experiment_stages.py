@@ -713,7 +713,9 @@ def stage_contingency(form, demo=False):
         cap = (rf"{la} $\times$ {lb}, Form~A; counts (row \%). $\chi^2({s['dof']})={s['chi2']:.1f}$, "
                rf"Cram\'er's $V={s['cramers_v']:.2f}$, $n={s['n']}$.")
         tex.append(cells.to_latex(caption=cap.replace("_", r"\_"), label="tab:ct_" + key.replace("_", ""), escape=False)
-                   .replace("M1_", r"M1\_"))
+                   .replace("M1_", r"M1\_")
+                   .replace(r"\begin{tabular}", r"\resizebox{\textwidth}{!}{\begin{tabular}")
+                   .replace(r"\end{tabular}", r"\end{tabular}}"))
         log("contingency", key, s)
     # descriptive mean ability / time per M1_3 class
     eap = M["M0"].posterior(Y, None, None, g)[1]

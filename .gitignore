@@ -17,3 +17,12 @@ __pycache__/
 .ipynb_checkpoints/
 results/checkpoints/
 *.egg-info/
+
+# LaTeX build artefacts
+manuscript/*.aux
+manuscript/*.bbl
+manuscript/*.blg
+manuscript/*.fdb_latexmk
+manuscript/*.fls
+manuscript/*.log
+manuscript/*.out

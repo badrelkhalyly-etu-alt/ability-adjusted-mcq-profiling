@@ -299,9 +299,11 @@ def latex_tables(form):
         out["tab_e10_paired"] = t.to_latex(index=False, float_format="%.5f", caption="Paired log-loss gains (nats/item) with 95\\% bootstrap CIs.", label="tab:paired")
     p = TAB / f"{form}_E6_positive_summary.csv"
     if p.exists():
-        out["tab_e6"] = pd.read_csv(p).to_latex(index=False, float_format="%.2f", caption="Positive-control simulation: power and recovery.", label="tab:e6")
+        out["tab_e6"] = pd.read_csv(p).drop(columns=["secs", "mean_maxpost"], errors="ignore").to_latex(index=False, float_format="%.2f", caption="Positive-control simulation: power and recovery.", label="tab:e6")
     for k, v in out.items():
-        (MAN / "tables" / (f"{k}.tex" if form != "demo" else f"demo_SYNTHETIC_{k}.tex")).write_text(v)
+        head, sep, body = v.partition(r"\begin{tabular}")
+        v = head + sep + body.replace("_", r"\_").replace("NaN", "--") if sep else v  # escape cell underscores only
+        (MAN / "tables" / (f"{k}.tex" if form != "demo" else f"demo_SYNTHETIC_{k}.tex")).write_text(v, encoding="utf8")
     return list(out)
 
 

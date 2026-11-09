@@ -1,0 +1,23 @@
+{
+  "verdict": "C",
+  "verdict_label": "No evidence: existing continuous models explain the data sufficiently well",
+  "data": "PISA 2025 PUF, linear mathematics Forms A (confirmatory), B, C (replication); not the FSBM students",
+  "protocol_commit": "e54a29f",
+  "hypotheses": {
+    "H1_registered": {"status": "met", "dBIC_vs_A2": 562.4, "null_q95": {"fitted": -130.3, "skewed": -126.4}, "null_fp": "0/80",
+                      "heldout_M1_3_vs_A2": [0.00698, 0.00533, 0.00852]},
+    "H1_exploratory_competitors": {"status": "fails", "best_bic_model_all_forms": "G3PL",
+                                   "dBIC_M1_behind_G3PL": {"A": 39.9, "B": 25.3, "C": 86.3},
+                                   "heldout_M1_3_vs_G3PL": [0.00089, -0.00043, 0.00229],
+                                   "heldout_M1_3_vs_MIRT2G": [-0.00039, -0.00161, 0.00081],
+                                   "class_rule_fp_under_2D_null": "20/20", "class_rule_fp_under_guessing_null": "20/20"},
+    "H2": {"status": "met_point_estimate_small", "M2_vs_M0": [0.00148, 0.00091, 0.00209], "M3_3_vs_M1_3": [0.00248, 0.00112, 0.00391],
+           "speed_vs_totaltime": [0.00024, -0.00003, 0.00047]},
+    "H3": {"status": "partial", "dev_profile_corr_median": 0.963, "person_ari": "bimodal: 14/20 ~0.88, 6/20 ~0", "ranking_replicates_B_C": true},
+    "H4": {"status": "not_supported", "cramers_v_class_x_score_quartile": 0.642, "cramers_v_class_x_oecd": 0.197},
+    "H5": {"status": "not_supported", "dR2": {"kmeans": 0.0020, "M1_2": 0.0010, "M1_3": 0.0039}}
+  },
+  "source_pipeline": {"silhouette_k4": 0.353, "copula_null_mean": 0.363, "irt_null_mean": 0.396, "lca_K4_under_null": "80/80",
+                      "kmeans_predictor_vs_2PL_nats": -0.021},
+  "power": {"shift_0.5": 0.0, "shift_1.0": "0.4-1.0", "shift_1.5": 1.0}
+}
