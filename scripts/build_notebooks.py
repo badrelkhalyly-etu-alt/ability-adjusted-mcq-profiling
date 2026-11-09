@@ -12,7 +12,7 @@ import nbformat as nbf
 NB = Path(__file__).resolve().parents[1] / "notebooks"
 
 SETUP = r'''# --- Environment (Colab or local) -------------------------------------------
-REPO_URL = "__REPO_URL__"   # GitHub repository; a private repository needs a token in the URL or an uploaded copy
+REPO_URL = "__REPO_URL__"   # GitHub repository (filled by build_notebooks.py)
 DEMO = None            # None = real PISA 2025 data if data/processed/ is present (it is in the repository), else synthetic; or force True/False
 import os, sys, subprocess, platform
 IN_COLAB = "google.colab" in sys.modules
@@ -20,7 +20,7 @@ if IN_COLAB:
     if not os.path.exists("ability-adjusted-mcq-profiling"):
         if not REPO_URL:
             raise SystemExit("Set REPO_URL or upload the repository folder to /content.")
-        subprocess.run(["git", "clone", REPO_URL], check=True)
+        subprocess.run(["git", "clone", "--depth", "1", "-b", "main", REPO_URL], check=True)
     os.chdir("ability-adjusted-mcq-profiling")
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "-r", "requirements.txt"], check=True)
 else:
@@ -243,10 +243,13 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
 
 
 def main():
-    url = sys.argv[1] if len(sys.argv) > 1 else ""
+    url = sys.argv[1] if len(sys.argv) > 1 else "https://github.com/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling.git"
     for name, title, goal, cells in BOOKS:
         nb = nbf.v4.new_notebook()
-        nb.cells = [nbf.v4.new_markdown_cell(f"# {title}\n\n**Objective.** {goal}\n\n{DATA_NOTE}\n\n"
+        gh = url.removeprefix("https://github.com/").removesuffix(".git")
+        badge = (f"[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)]"
+                 f"(https://colab.research.google.com/github/{gh}/blob/main/notebooks/{name}.ipynb)\n\n" if gh else "")
+        nb.cells = [nbf.v4.new_markdown_cell(badge + f"# {title}\n\n**Objective.** {goal}\n\n{DATA_NOTE}\n\n"
                                              "Errors are raised, never swallowed. Every output is written to `results/` with the form name; "
                                              "outputs from synthetic data are prefixed `demo_`."),
                     nbf.v4.new_code_cell(SETUP.replace("__REPO_URL__", url))] + [nbf.v4.new_code_cell(c) for c in cells]

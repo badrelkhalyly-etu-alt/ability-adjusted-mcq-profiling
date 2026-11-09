@@ -4,6 +4,7 @@ title: "ability-adjusted-mcq-profiling: null-calibrated mixture IRT for score-ti
 version: 0.1.0
 date-released: 2026-11-08
 license: MIT
+repository-code: "https://github.com/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling"
 authors:
   - family-names: Safeh
     given-names: Nisrine

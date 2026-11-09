@@ -1,5 +1,8 @@
 # ability-adjusted-mcq-profiling
 
+**Repository:** https://github.com/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling (branch `main`)  
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/00_environment_colab.ipynb)
+
 **Are score–time "behavioural profiles" real classes of examinees, and what should replace them?**
 An empirical study on the PISA 2025 mathematics test (OECD public-use files).
 
@@ -34,23 +37,22 @@ Hypotheses and decision rules were fixed before analysis: the main protocol at c
 
 ## Quick start in Google Colab
 
-1. Open any notebook from `notebooks/` in Colab (*File → Open notebook → GitHub*, then paste the repository URL).
-2. In the first cell, set `REPO_URL` to the repository URL. A private repository needs a personal access token in the URL.
-3. Run all cells. The first cell clones the repository, installs the requirements and **uses the PISA 2025 data in `data/processed/` automatically**. Set `DEMO = True` for a fast run on synthetic data.
+1. Click a notebook name in the table below. It opens directly in Colab, from the `main` branch.
+2. Run all cells (*Runtime → Run all*). The first cell clones the repository, installs the requirements and **uses the PISA 2025 data in `data/processed/` automatically**. Set `DEMO = True` for a fast run on synthetic data.
 
 | Notebook | Content |
 |---|---|
-| `00_environment_colab` | Installation, versions, test suite |
-| `01_data_audit` | Checks on the analytic forms: duplicates, missing values, item codes, timing anomalies |
-| `02_baseline_clustering` | Score–time K-means and other clustering methods, stability |
-| `03_irt_models` | Item response models (2PL, guessing, two dimensions) |
-| `04_lca_mixirt` | Latent class analysis and mixture IRT |
-| `05_joint_duration_model` | Joint model of responses and completion time |
-| `06_null_simulation` | Simulations from continuous models without classes (false-positive rates) and positive controls |
-| `07_robustness_ablation` | Not-reached scoring, survey weights, alternative specifications |
-| `08_figures_results` | Figures, tables and final verdict |
-| `09_continuous_representation` | The continuous ability × relative-time representation and its evaluation |
-| `10_temporal_regimes` | Latent time regimes versus continuous time distributions |
+| [`00_environment_colab`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/00_environment_colab.ipynb) | Installation, versions, test suite |
+| [`01_data_audit`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/01_data_audit.ipynb) | Checks on the analytic forms: duplicates, missing values, item codes, timing anomalies |
+| [`02_baseline_clustering`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/02_baseline_clustering.ipynb) | Score–time K-means and other clustering methods, stability |
+| [`03_irt_models`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/03_irt_models.ipynb) | Item response models (2PL, guessing, two dimensions) |
+| [`04_lca_mixirt`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/04_lca_mixirt.ipynb) | Latent class analysis and mixture IRT |
+| [`05_joint_duration_model`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/05_joint_duration_model.ipynb) | Joint model of responses and completion time |
+| [`06_null_simulation`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/06_null_simulation.ipynb) | Simulations from continuous models without classes (false-positive rates) and positive controls |
+| [`07_robustness_ablation`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/07_robustness_ablation.ipynb) | Not-reached scoring, survey weights, alternative specifications |
+| [`08_figures_results`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/08_figures_results.ipynb) | Figures, tables and final verdict |
+| [`09_continuous_representation`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/09_continuous_representation.ipynb) | The continuous ability × relative-time representation and its evaluation |
+| [`10_temporal_regimes`](https://colab.research.google.com/github/badrelkhalyly-etu-alt/ability-adjusted-mcq-profiling/blob/main/notebooks/10_temporal_regimes.ipynb) | Latent time regimes versus continuous time distributions |
 
 Long stages (model fits, simulations) can take hours on real data. Each notebook also displays the saved results from `results/`, so it can be read without re-running anything.
 
