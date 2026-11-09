@@ -12,5 +12,6 @@ for k, v in cap.items():
     for a, b in REPL:
         v = v.replace(a, b)
     lines.append(r"\expandafter\def\csname cap@" + k + r"\endcsname{" + v + "}")
+(ROOT / "manuscript/figcaptions.tex").parent.mkdir(parents=True, exist_ok=True)   # manuscript/ is not in the repository
 (ROOT / "manuscript/figcaptions.tex").write_text("\n".join(lines) + "\n", encoding="utf8")
 print(len(cap), "captions")

@@ -33,9 +33,8 @@ src/mcq_profiles/
   statistics.py     Q3, l_z, logistic DIF, BH, Clopper–Pearson, Cramér's V, bootstrap
   evaluation.py     masked-item log loss / Brier / calibration
 scripts/        extraction, experiment stages (E1–E10), figures/tables, notebooks
-notebooks/      00–08 (Colab-ready; run in DEMO mode without licensed data)
+notebooks/      00–10 (Colab-ready; use the PISA 2025 extracts in data/processed/, or DEMO = True for synthetic data)
 results/        metrics (JSON), tables (CSV), figures (PDF/SVG/PNG); checkpoints are git-ignored
-manuscript/     LaTeX article (article.tex + sections/, tables/)
 reports/        manuscript audit, protocol + deviation log, reproducibility report, verdict
 literature/     review 2024–2026, Scopus verification, related-work and novelty matrices
 tests/          pytest suite (estimator recovery, identification, data coding, reproducibility)
@@ -48,7 +47,7 @@ pytest -q                            # unit tests; no licensed data needed
 python scripts/run_experiments.py --stage all --demo   # synthetic smoke test (outputs demo_*)
 ```
 To run the full PISA 2025 analysis:
-1. Obtain the public-use files and extract them as described in `data/README.md`.
+1. The analysis-ready PISA 2025 extracts are already in `data/processed/` (see `data/README.md` to rebuild them from the OECD files).
 2. Run the stages in order:
    ```bash
    python scripts/run_experiments.py --stage fit          # model ladder on the Form A training set
@@ -63,7 +62,8 @@ To run the full PISA 2025 analysis:
 The test set is used only by stage `e10`. The protocol requires that stage to be run once, after all configuration is committed.
 
 ## Data and ethics
-- No student-level data are committed. `data/raw/`, `data/processed/`, `*.sav`, `*.parquet` and checkpoints are git-ignored.
+- `data/processed/` holds anonymised extracts of the PISA 2025 public-use files (OECD), so the notebooks run in Colab from a clone. The raw `.sav` files (1–13 GB each) and model checkpoints are not committed.
+- The manuscript is kept outside this repository.
 - PISA public-use files are anonymised. Redistributing them is governed by the OECD terms of use.
 - Profiles must not be used for high-stakes decisions about individual students. The study validates no pedagogical outcome.
 

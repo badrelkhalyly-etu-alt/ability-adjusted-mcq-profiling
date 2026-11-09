@@ -17,6 +17,7 @@ import build_results as br  # noqa: E402  (shared style, palette and save())
 
 plt = br.plt
 RC, RT_, T, MAN = ROOT / "results" / "continuous", ROOT / "results" / "temporal", ROOT / "results" / "tables", ROOT / "manuscript" / "tables"
+MAN.mkdir(parents=True, exist_ok=True)   # manuscript/ is not in the repository
 FORMS = [("confirm", "math_formB", "B"), ("confirm", "math_formC", "C")]
 EOL = "\\" * 2
 

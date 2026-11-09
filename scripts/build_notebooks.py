@@ -2,7 +2,7 @@
 
 Usage: python scripts/build_notebooks.py [REPO_URL]
 Each notebook (1) can re-run its stage (DEMO = synthetic, or real PISA data if available) and
-(2) displays the saved PISA 2025 aggregate results committed in results/, so it can be read without the licensed data.
+(2) displays the saved PISA 2025 aggregate results committed in results/.
 """
 import sys
 from pathlib import Path
@@ -13,7 +13,7 @@ NB = Path(__file__).resolve().parents[1] / "notebooks"
 
 SETUP = r'''# --- Environment (Colab or local) -------------------------------------------
 REPO_URL = "__REPO_URL__"   # GitHub repository; a private repository needs a token in the URL or an uploaded copy
-DEMO = True            # True = synthetic demonstration (no PISA data needed); False = real PISA analysis
+DEMO = None            # None = real PISA 2025 data if data/processed/ is present (it is in the repository), else synthetic; or force True/False
 import os, sys, subprocess, platform
 IN_COLAB = "google.colab" in sys.modules
 if IN_COLAB:
@@ -27,6 +27,8 @@ else:
     while not os.path.exists("configs") and os.getcwd() != os.path.dirname(os.getcwd()):
         os.chdir("..")
 sys.path.insert(0, "src"); sys.path.insert(0, "scripts")
+if DEMO is None:
+    DEMO = not os.path.exists("data/processed/math_formA.parquet")
 import numpy, scipy, pandas, sklearn
 print(platform.python_version(), "numpy", numpy.__version__, "scipy", scipy.__version__,
       "pandas", pandas.__version__, "sklearn", sklearn.__version__)
@@ -59,10 +61,9 @@ def show_fig(name):
     p = Path("results/figures") / f"{name}.png"
     display(Image(str(p))) if p.exists() else print("missing", p)'''
 
-DATA_NOTE = ("**Data.** Real mode needs the PISA 2025 public-use files processed as described in `data/README.md` "
-             "(licensed by the OECD and never committed). For Colab, upload `data/processed/math_form*.parquet/.json` and "
-             "`student_external.parquet` to the same relative paths, or mount Google Drive. "
-             "Demo mode generates synthetic data. **Demo outputs are not findings.** "
+DATA_NOTE = ("**Data.** The analysis-ready PISA 2025 public-use extracts are in `data/processed/` (see `data/README.md`), "
+             "so cloning the repository in Colab is enough to run the real analyses; `DEMO` switches to real data automatically. "
+             "Set `DEMO = True` for a fast synthetic demonstration. **Demo outputs are not findings.** "
              "The *saved results* cells display the PISA 2025 aggregate outputs committed in `results/`.")
 
 CT = ["profile_x_M1_3", "M1_3_x_scoreband", "profile_x_M1_2", "profile_x_oecd", "profile_x_booklet", "M1_3_x_oecd"]
@@ -164,7 +165,7 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       "if not DEMO:\n    steps += [['build_data_table.py'], ['build_crossform_table.py'], ['build_robustness_table.py'], ['build_continuous_table.py']]\n"
       "for s in steps:\n    print(subprocess.run([sys.executable, 'scripts/' + s[0]] + s[1:], capture_output=True, text=True).stdout[-2000:])",
       "# Every cell of the manuscript tables must equal its source CSV (prints mismatches, then the total)\n"
-      "print(subprocess.run([sys.executable, 'scripts/check_tables.py'], capture_output=True, text=True).stdout[-3000:])",
+      "if os.path.exists('manuscript'):   # the manuscript is kept outside the repository\n    print(subprocess.run([sys.executable, 'scripts/check_tables.py'], capture_output=True, text=True).stdout[-3000:])",
       SHOW, "show_json('verdict.json')",
       "display(Markdown(Path('reports/scientific_verdict.md').read_text(encoding='utf8')))",
       "display(Markdown(Path('reports/q1_readiness.md').read_text(encoding='utf8')))"]),

@@ -52,5 +52,6 @@ for name, key, fmt in lab:
         vals = [fmt.format(v).replace(",", "{,}") for v in tab[key]]
     L.append(name + " & " + " & ".join(vals) + "\\\\")
 L += ["\\bottomrule\\end{tabular}", "\\end{table}"]
+(ROOT / "manuscript/tables/tab_data.tex").parent.mkdir(parents=True, exist_ok=True)   # manuscript/ is not in the repository
 (ROOT / "manuscript/tables/tab_data.tex").write_text("\n".join(L) + "\n", encoding="utf-8")
 print(tab.T)

@@ -1,11 +1,11 @@
-# Private / licensed data: never commit raw or processed student-level records
+# Raw PISA SPSS files are too large for GitHub (1-13 GB each): download them from the OECD (see data/README.md)
 data/raw/*
-data/processed/*
 !data/raw/.gitkeep
-!data/processed/.gitkeep
 *.sav
 *.zip
-*.parquet
+# Processed PISA 2025 public-use extracts in data/processed/ ARE committed (each file < 100 MB) for Colab
+# Manuscript is kept outside the repository
+manuscript/
 # Credentials
 .env
 *.token

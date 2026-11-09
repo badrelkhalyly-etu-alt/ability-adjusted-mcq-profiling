@@ -52,5 +52,6 @@ for lab, key, fmt in spec:
     L.append(lab + EOL if key is None else lab + " & " + " & ".join(fmt(rows[f][key]) for f in FORMS) + EOL)
 L.append("Squared-error gain, continuous vs profiles & " + " & ".join(ci(f) for f in FORMS) + EOL)
 L += [r"\bottomrule\end{tabular}", r"\end{table}"]
+(ROOT / "manuscript" / "tables" / "tab_continuous.tex").parent.mkdir(parents=True, exist_ok=True)   # manuscript/ is not in the repository
 (ROOT / "manuscript" / "tables" / "tab_continuous.tex").write_text("\n".join(L) + "\n", encoding="utf8")
 print(summ.round(3).to_string())

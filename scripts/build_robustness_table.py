@@ -68,5 +68,6 @@ for lab, key, fmt in spec:
     else:
         L.append(lab + " & " + " & ".join(fmt(rows[f][key]) for f in FORMS) + EOL)
 L += [r"\bottomrule\end{tabular}", r"\end{table}"]
+(ROOT / "manuscript" / "tables" / "tab_robustness.tex").parent.mkdir(parents=True, exist_ok=True)   # manuscript/ is not in the repository
 (ROOT / "manuscript" / "tables" / "tab_robustness.tex").write_text("\n".join(L) + "\n", encoding="utf8")
 print(summ.round(3).to_string())

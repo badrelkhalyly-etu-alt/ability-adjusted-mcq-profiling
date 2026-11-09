@@ -725,6 +725,7 @@ def stage_contingency(form, demo=False):
     out["M1_3_class_profile"] = desc.reset_index().to_dict(orient="records")
     out["profile_names"] = {int(k): v for k, v in names.items()}
     save_json(out, f"{form}_contingency.json")
+    (RES.parent / "manuscript" / "tables" / f"{form}_contingency.tex").parent.mkdir(parents=True, exist_ok=True)   # manuscript/ is not in the repository
     (RES.parent / "manuscript" / "tables" / f"{form}_contingency.tex").write_text("\n\n".join(tex), encoding="utf-8")
 
 

@@ -44,5 +44,6 @@ for m in d.index:
     vals = " & ".join(("\\textbf{0}" if v == 0 else f"{v:.0f}") for v in d.loc[m])
     L.append(f"{m.replace('_', chr(92) + '_')} & {kind.get(m, '')} & {vals}\\\\")
 L += [r"\bottomrule\end{tabular}", r"\end{table}"]
+(ROOT / "manuscript/tables/tab_crossform.tex").parent.mkdir(parents=True, exist_ok=True)   # manuscript/ is not in the repository
 (ROOT / "manuscript/tables/tab_crossform.tex").write_text("\n".join(L) + "\n", encoding="utf8")
 print(d.round(0))
