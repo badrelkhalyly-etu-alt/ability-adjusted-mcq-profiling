@@ -875,3 +875,88 @@ def stage_robustness(form, demo=False):
     res["reference_M1_3_class_props"] = np.exp(ref_m.logpi[0]).round(3).tolist()
     save_json(res, f"{form}_robustness.json")
     log(form, "robustness\n" + tab.sort_values(["variant", "BIC"]).to_string() + "\n" + str(res))
+
+
+# ------------------------------------------------------------------ continuous alternative (exploratory)
+def stage_continuous_map(form, demo=False):
+    """Exploratory, training split only (logged as a deviation). Compares the four K-means score-time labels
+    with the continuous coordinates they summarise:
+    (i) label reliability: parallel-form replication of each student's score from the 2PL posterior, with the
+        student's own time held fixed; share of replications that keep the observed K-means label;
+    (ii) reliability of the continuous ability estimate (EAP) from the same model;
+    (iii) 5-fold cross-validated prediction of self-reported effort (EFFORT1) from the labels or from
+        continuous ability and time."""
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.cluster import KMeans
+    from sklearn.model_selection import KFold
+    from sklearn.metrics import cohen_kappa_score
+    ck = load_ckpt(form)
+    df, _ = load_form(form, demo)
+    Y, logT, cens, g, _ = arrays(df)
+    tr = ck["tr"]
+    m0 = ck["models"]["M0"]
+    score = df.final_score.to_numpy(float)
+    minutes = df.total_duration_minutes.to_numpy(float)
+    ok = tr & np.isfinite(score) & np.isfinite(minutes) & (minutes > 0)
+    X = np.column_stack([score[ok], minutes[ok]])
+    sc = StandardScaler().fit(X)
+    km = KMeans(4, n_init=50, random_state=42).fit(sc.transform(X))
+    lab = km.labels_
+    Yo, go = Y[ok], g[ok]
+    _, eap, psd, post = m0.posterior(Yo, None, None, go)
+    p_node = np.exp(m0._item_logp()[0][0])          # Q x J
+    w = post[:, 0, :]
+    w = w / w.sum(1, keepdims=True)
+    cw = np.cumsum(w, 1)
+    obs = ~np.isnan(Yo)
+    rng = np.random.default_rng(2026)
+    R = 200 if not demo else 20
+    agree = np.zeros(len(lab))
+    kappas = []
+    for _ in range(R):
+        q = (rng.random(len(lab))[:, None] > cw).sum(1).clip(max=cw.shape[1] - 1)
+        ys = (rng.random(Yo.shape) < p_node[q]) & obs
+        s_rep = ys.sum(1).astype(float)
+        lab_rep = km.predict(sc.transform(np.column_stack([s_rep, X[:, 1]])))
+        agree += lab_rep == lab
+        kappas.append(cohen_kappa_score(lab, lab_rep))
+    agree /= R
+    rel_eap = float(np.var(eap) / (np.var(eap) + np.mean(psd ** 2)))
+    out = dict(form=form, n=int(ok.sum()), R=R,
+               label_agreement=dict(mean=float(agree.mean()), median=float(np.median(agree)),
+                                    share_below_0_8=float((agree < 0.8).mean()), share_below_0_5=float((agree < 0.5).mean()),
+                                    kappa_mean=float(np.mean(kappas)), kappa_q025=float(np.quantile(kappas, .025)),
+                                    kappa_q975=float(np.quantile(kappas, .975)),
+                                    by_profile={int(k): float(agree[lab == k].mean()) for k in range(4)}),
+               eap_reliability=rel_eap, eap_mean_psd=float(psd.mean()))
+    # (iii) effort, 5-fold CV on training students
+    ext = pd.read_parquet(RES.parent / "data" / "processed" / "student_external.parquet")
+    d = df.loc[ok, ["CNT", "CNTSTUID", "BOOKID"]].reset_index(drop=True)
+    d = d.merge(ext[["CNT", "CNTSTUID", "EFFORT1"]], how="left")
+    assert len(d) == len(lab)
+    d["eap"], d["logt"], d["km"] = eap, np.log(X[:, 1]), lab
+    keep = d.EFFORT1.notna().to_numpy()
+    d = d[keep].reset_index(drop=True)
+    yv = d.EFFORT1.to_numpy(float)
+    B = pd.get_dummies(d.BOOKID.astype(str), drop_first=True).to_numpy(float)
+    P = pd.get_dummies(d.km.astype(str), drop_first=True).to_numpy(float)
+    e, t = d.eap.to_numpy(), (d.logt - d.logt.mean()).to_numpy()
+    C = np.column_stack([e, t, e ** 2, t ** 2, e * t])
+    designs = {"booklet": B, "profiles": np.column_stack([B, P]), "continuous": np.column_stack([B, C]),
+               "profiles_plus_continuous": np.column_stack([B, P, C])}
+    pred = {k: np.zeros(len(yv)) for k in designs}
+    for a_, b_ in KFold(5, shuffle=True, random_state=0).split(yv):
+        for k, Xd in designs.items():
+            A = np.column_stack([np.ones(len(a_)), Xd[a_]])
+            beta = np.linalg.lstsq(A, yv[a_], rcond=None)[0]
+            pred[k][b_] = np.column_stack([np.ones(len(b_)), Xd[b_]]) @ beta
+    sst = np.sum((yv - yv.mean()) ** 2)
+    cv = {k: float(1 - np.sum((yv - p) ** 2) / sst) for k, p in pred.items()}
+    dse = (yv - pred["profiles"]) ** 2 - (yv - pred["continuous"]) ** 2     # >0: continuous better
+    lo, hi = np.quantile([rng.choice(dse, len(dse)).mean() for _ in range(2000)], [.025, .975])
+    out["effort_cv"] = dict(n=int(len(yv)), r2=cv, mse_gain_continuous_vs_profiles=[float(dse.mean()), float(lo), float(hi)])
+    np.savez_compressed(CKPT / f"{form}_continuous_map.npz", score=X[:, 0], minutes=X[:, 1], label=lab,
+                        agree=agree, eap=eap, psd=psd, centers=sc.inverse_transform(km.cluster_centers_))
+    save_json(out, f"{form}_continuous_map.json")
+    log("continuous map", {k: out[k] for k in ["n", "eap_reliability"]}, out["label_agreement"], out["effort_cv"])
+    return out

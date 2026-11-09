@@ -137,5 +137,35 @@
    "C": -620.5
   },
   "source": "results/tables/robustness_summary.csv"
+ },
+ "continuous_alternative_exploratory": {
+  "label_agreement_share_below_0_8": [
+   0.32,
+   0.29,
+   0.27
+  ],
+  "kappa": [
+   0.78,
+   0.81,
+   0.79
+  ],
+  "eap_reliability": [
+   0.86,
+   0.86,
+   0.85
+  ],
+  "effort_cv_r2": {
+   "profiles": [
+    0.008,
+    0.013,
+    0.013
+   ],
+   "continuous": [
+    0.018,
+    0.029,
+    0.017
+   ]
+  },
+  "source": "results/tables/continuous_map_summary.csv"
  }
 }

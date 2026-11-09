@@ -133,3 +133,21 @@ for r, k in zip(R, keys):
         if v.replace('$-$', '-') != e: bad += 1; print('robustness', k, f, v, e)
 print('robustness rows', len(R), len(keys)); report('robustness', n, bad)
 print('TOTAL table cells', tot)
+
+# continuous alternative
+cs = pd.read_csv(T + 'continuous_map_summary.csv', index_col=0)
+fmt = {'n': '%.0f', 'agree_mean': '%.2f', 'share_below_0_8': 'pct', 'kappa': '%.2f', 'eap_reliability': '%.2f',
+       'effort_n': '%.0f', 'r2_profiles': '%.3f', 'r2_continuous': '%.3f', 'r2_both': '%.3f'}
+R = [r for r in rows('manuscript/tables/tab_continuous.tex') if len(r) == 4]; bad = 0; n = 0
+for r, k in zip(R, list(fmt) + ['mse']):
+    for v, f in zip(r[1:], ['math_formA', 'math_formB', 'math_formC']):
+        if k == 'mse':
+            e = '%.3f [%.3f, %.3f]' % tuple(cs.loc[x, f] for x in ['mse_gain', 'mse_gain_lo', 'mse_gain_hi'])
+        elif fmt[k] == 'pct':
+            e = '%.0f' % (100 * cs.loc[k, f])
+        else:
+            e = fmt[k] % cs.loc[k, f]
+        n += 1
+        if v.replace('$-$', '-') != e: bad += 1; print('continuous', k, f, v, e)
+print('continuous rows', len(R), len(fmt) + 1); report('continuous', n, bad)
+print('TOTAL table cells (incl. continuous)', tot)

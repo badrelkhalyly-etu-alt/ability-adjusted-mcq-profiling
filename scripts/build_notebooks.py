@@ -152,12 +152,20 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       "for f in ['math_formA', 'math_formB', 'math_formC']:\n"
       "    display(Markdown(f'**{f}**')); show_json(f'{f}_robustness.json'); show_csv(f'{f}_robustness.csv')",
       "# Summary used by Table tab:robustness, and sampling-weight diagnostics (Kish effective n, ESS-rescaled BIC)\n"
-      "show_csv('robustness_summary.csv'); show_json('weight_diagnostics.json')"]),
+      "show_csv('robustness_summary.csv'); show_json('weight_diagnostics.json')",
+      "# Continuous alternative (exploratory, training split, deviation log): profile-label reliability under parallel
+"
+      "# tests, EAP reliability, cross-validated prediction of self-reported effort. Needs the real PISA extracts.
+"
+      "if not DEMO:
+    for f in ['math_formA', 'math_formB', 'math_formC']:
+        run('continuous_map', f)",
+      "show_csv('continuous_map_summary.csv'); show_fig('fig15_continuous_map')"]),
     ("08_figures_results", "Figures, tables, verdict and reproducibility report",
      "Rebuild every figure and table from the saved outputs, then display the scientific verdict and the Q1-readiness assessment.",
      ["import subprocess, sys\n"
       "steps = [['build_results.py'] + (['--demo'] if DEMO else []), ['build_captions.py']]\n"
-      "if not DEMO:\n    steps += [['build_data_table.py'], ['build_crossform_table.py']]\n"
+      "if not DEMO:\n    steps += [['build_data_table.py'], ['build_crossform_table.py'], ['build_robustness_table.py'], ['build_continuous_table.py']]\n"
       "for s in steps:\n    print(subprocess.run([sys.executable, 'scripts/' + s[0]] + s[1:], capture_output=True, text=True).stdout[-2000:])",
       "# Every cell of the manuscript tables must equal its source CSV (prints mismatches, then the total)\n"
       "print(subprocess.run([sys.executable, 'scripts/check_tables.py'], capture_output=True, text=True).stdout[-3000:])",

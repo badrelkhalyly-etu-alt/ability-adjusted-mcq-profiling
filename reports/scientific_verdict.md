@@ -41,6 +41,11 @@ The protocol could have detected substantial classes. The negative result is the
 - **Not D.** Power is adequate for shifts of 1 logit or more (3,363–3,980 training students per form). The test set and two replication forms give consistent answers.
 - The small, reliable gain from total time (H2) concerns a continuous covariate, not classes.
 
+## Continuous alternative (exploratory, training splits)
+- About 27–32 % of students keep their K-means profile in fewer than 80 % of parallel tests (κ = 0.78–0.81), whereas the continuous ability estimate has reliability 0.85–0.86.
+- Cross-validated R² for self-reported effort: 0.017–0.029 with continuous ability and time, 0.008–0.013 with the profiles; the gain is significant on Form B only.
+- On held-out masked responses (E10), the profile predictor is 0.021 nats per item worse than the 2PL.
+
 ## Alternative publishable question (verdict C)
 The limits of behavioural profiling from minimal examination data. The paper shows, with a reusable pre-registered protocol, three things:
 1. Silhouette, bootstrap stability and LCA enumeration cannot distinguish score–time profiles from a continuum.

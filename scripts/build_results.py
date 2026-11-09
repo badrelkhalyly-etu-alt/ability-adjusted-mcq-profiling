@@ -79,7 +79,7 @@ def fig_e1(form, cap):
                    textcoords="offset points", fontsize=7)
     ax[2].set(xlabel="Silhouette (k=4)", ylabel="Null replications", title="(c) Silhouette under no clusters")
     save(fig, "fig01_score_time_clusters",
-         f"Source-study pipeline reproduced on PISA 2025 Form A (n = {e1['n_used']}). (a) Score–time density with the four "
+         f"Score–time K-means pipeline on PISA 2025 Form A (n = {e1['n_used']}). (a) Score–time density with the four "
          f"K-means centroids. (b) Silhouette by k; the shaded band is the conventional 'weak structure' range. "
          f"(c) Silhouette of K-means (k = 4) on {e1['null_silhouette']['R']} datasets with the same marginals and "
          f"rank correlation but no clusters (Gaussian copula), against the observed value.", cap)
@@ -269,6 +269,42 @@ def fig_dif(form, cap):
          "is the Jodoin–Gierl threshold for moderate DIF.", cap)
 
 
+def fig_continuous_map(form, cap):
+    """Exploratory: reliability of K-means labels versus the continuous coordinates they summarise (training split)."""
+    m = J(f"{form}_continuous_map.json")
+    p = RES / "checkpoints" / f"{form}_continuous_map.npz"
+    if not m or not p.exists():
+        return
+    z = np.load(p)
+    order = np.argsort(-z["agree"])                  # draw unstable students last, on top
+    from matplotlib.colors import LinearSegmentedColormap
+    cmap = LinearSegmentedColormap.from_list("stab", plt.get_cmap("Blues_r")(np.linspace(0, 0.75, 256)))  # stable stays visible
+    fig, ax = plt.subplots(1, 2, figsize=(9.6, 3.2), gridspec_kw=dict(width_ratios=[1.35, 1], wspace=0.38))
+    jit = np.random.default_rng(0).uniform(-0.25, 0.25, len(order))
+    sc = ax[0].scatter(z["minutes"][order], z["score"][order] + jit, c=z["agree"][order], cmap=cmap, vmin=0, vmax=1,
+                       s=6, linewidths=0)
+    for c in z["centers"]:
+        ax[0].scatter(c[1], c[0], s=70, color=C2, edgecolor="white", linewidth=1.5, zorder=3)
+    cb = fig.colorbar(sc, ax=ax[0], pad=0.01)
+    cb.set_label("P(same profile in a parallel test)")
+    ax[0].set(xlabel="Total time (min)", ylabel="Score (items correct, jittered)",
+              title="(a) Profile label stability, K-means centroids")
+    la = m["label_agreement"]
+    ax[1].hist(z["agree"], bins=np.linspace(0, 1, 21), color=C1, edgecolor="white", linewidth=1)
+    ax[1].axvline(0.8, color=INK2, ls="--", lw=1.2)
+    ax[1].annotate(f"{la['share_below_0_8']:.0%} of students\nbelow 0.8", (0.8, ax[1].get_ylim()[1] * 0.85), xytext=(-6, 0),
+                   textcoords="offset points", ha="right", fontsize=7.5, color=INK)
+    ax[1].set(xlabel="P(same profile in a parallel test)", ylabel="Students",
+              title=f"(b) Label agreement; κ = {la['kappa_mean']:.2f}, EAP reliability = {m['eap_reliability']:.2f}")
+    save(fig, "fig15_continuous_map",
+         f"How stable is a student's score–time profile? Training students of Form A (n = {m['n']}). For each student, "
+         f"{m['R']} parallel-test scores were drawn from the 2PL posterior with the student's own time held fixed, and "
+         f"each replicated (score, time) point was assigned to the nearest K-means centroid. (a) Students coloured by "
+         f"the share of replications that keep their observed profile; orange dots are the centroids. (b) Distribution "
+         f"of that share; κ is the mean Cohen's kappa between observed and replicated profiles. Because time is held "
+         f"fixed, the instability shown is a lower bound.", cap)
+
+
 def fig_summary(form, cap, verdict):
     if not verdict:
         return
@@ -367,6 +403,7 @@ def main():
     fig_null(form, cap)
     fig_ablation(form, cap)
     fig_dif(form, cap)
+    fig_continuous_map(form, cap)
     fig_summary(form, cap, J(f"{form}_verdict.json"))
     (FIG / "captions.json").write_text(json.dumps(cap, indent=2, ensure_ascii=False), encoding="utf8")
     tabs = latex_tables(form)
