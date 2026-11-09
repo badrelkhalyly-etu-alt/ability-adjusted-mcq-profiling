@@ -3,3 +3,10 @@
 [Parallel(n_jobs=8)]: Done   2 tasks      | elapsed: 38.3min
 23:46:55 E5 generator A2 {'M0': np.float64(87468.06805922411), 'A2': np.float64(87364.74797858062), 'A3': np.float64(87368.7699353891)}
 [Parallel(n_jobs=14)]: Using backend LokyBackend with 14 concurrent workers.
+[Parallel(n_jobs=14)]: Done  44 tasks      | elapsed: 78.1min
+01:32:57 E5 generator A2 {'M0': np.float64(87468.06805922411), 'A2': np.float64(87364.74797858062), 'A3': np.float64(87368.7699353891)}
+[Parallel(n_jobs=12)]: Using backend LokyBackend with 12 concurrent workers.
+[Parallel(n_jobs=12)]: Done  48 tasks      | elapsed:    2.7s
+[Parallel(n_jobs=12)]: Done  74 out of  80 | elapsed: 19.9min remaining:  1.6min
+[Parallel(n_jobs=12)]: Done  80 out of  80 | elapsed: 23.7min finished
+01:56:41 E5 {'fitted': {'R': 40, 'fp_resp': 0.0, 'fp_resp_ci': (0.0, 0.08809730287880237), 'fp_dur': 0.0, 'fp_dur_ci': (0.0, 0.08809730287880237), 'dBIC_resp_q95': -130.2740432660874, 'dBIC_dur_q95': -41.30599139983462, 'lca_K_counts': {4: 40}, 'kmeans4_sil_mean': 0.3956635175075004, 'kmeans4_sil_q95': 0.4057672365819734, 'nonconverged': 6}, 'skewed': {'R': 40, 'fp_resp': 0.0, 'fp_resp_ci': (0.0, 0.08809730287880237), 'fp_dur': 0.3, 'fp_dur_ci': (0.16562720439323564, 0.4653162852541233), 'dBIC_resp_q95': -126.40162540553575, 'dBIC_dur_q95': 36.35807119889209, 'lca_K_counts': {4: 40}, 'kmeans4_sil_mean': 0.3908850349746219, 'kmeans4_sil_q95': 0.40300378110147034, 'nonconverged': 2}}

@@ -112,7 +112,7 @@ class ScoreTimeProfilePredictor:
     def fit(self, Y, minutes, mask):
         s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
         X = np.column_stack([s, np.log(minutes)])
-        ok = ~np.isnan(X).any(1)
+        ok = np.isfinite(X).all(1)  # zero or missing unmasked time -> marginal fallback
         self.sc = StandardScaler().fit(X[ok])
         self.km = KMeans(self.k, n_init=50, random_state=self.seed).fit(self.sc.transform(X[ok]))
         lab = self.km.labels_
@@ -124,7 +124,7 @@ class ScoreTimeProfilePredictor:
     def predict(self, Y, minutes, mask):
         s = np.nanmean(np.where(mask[None, :], np.nan, Y), 1)
         X = np.column_stack([s, np.log(minutes)])
-        ok = ~np.isnan(X).any(1)
+        ok = np.isfinite(X).all(1)  # zero or missing unmasked time -> marginal fallback
         P = np.tile(self.p_all, (len(Y), 1))
         lab = self.km.predict(self.sc.transform(X[ok]))
         P[ok] = self.p[lab]
