@@ -61,7 +61,7 @@ def show_fig(name):
     p = Path("results/figures") / f"{name}.png"
     display(Image(str(p))) if p.exists() else print("missing", p)'''
 
-DATA_NOTE = ("**Data.** The analysis-ready PISA 2025 public-use extracts are in `data/processed/` (see `data/README.md`), "
+DATA_NOTE = ("**Data.** The analysis-ready PISA 2025 public-use extracts are in `data/processed/` (see the Data section of `README.md`), "
              "so cloning the repository in Colab is enough to run the real analyses; `DEMO` switches to real data automatically. "
              "Set `DEMO = True` for a fast synthetic demonstration. **Demo outputs are not findings.** "
              "The *saved results* cells display the PISA 2025 aggregate outputs committed in `results/`.")
@@ -167,8 +167,8 @@ print("missing total time:", df.total_duration_minutes.isna().sum(), " >60 min:"
       "# Every cell of the manuscript tables must equal its source CSV (prints mismatches, then the total)\n"
       "if os.path.exists('manuscript'):   # the manuscript is kept outside the repository\n    print(subprocess.run([sys.executable, 'scripts/check_tables.py'], capture_output=True, text=True).stdout[-3000:])",
       SHOW, "show_json('verdict.json')",
-      "display(Markdown(Path('reports/scientific_verdict.md').read_text(encoding='utf8')))",
-      "display(Markdown(Path('reports/q1_readiness.md').read_text(encoding='utf8')))"]),
+      "for p in [Path('reports/scientific_verdict.md')]:   # reports are kept outside the repository; verdict.json above has the numbers\n    display(Markdown(p.read_text(encoding='utf8'))) if p.exists() else print('not in the repository:', p)",
+      "p = Path('reports/q1_readiness.md')\ndisplay(Markdown(p.read_text(encoding='utf8'))) if p.exists() else print('not in the repository:', p)"]),
     ("09_continuous_representation", "Continuous ability x relative-time representation with uncertainty (C2, C3)",
      "Build the uncertainty-aware continuous representation (ability from an IRT model with guessing; relative time "
      "adjusted for ability, booklet, items reached and item time intensities) and compare it with discrete score-time "

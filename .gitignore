@@ -26,3 +26,6 @@ manuscript/*.fdb_latexmk
 manuscript/*.fls
 manuscript/*.log
 manuscript/*.out
+# Markdown documents (reports, notes) are kept outside the repository; only the global README is committed
+*.md
+!/README.md
