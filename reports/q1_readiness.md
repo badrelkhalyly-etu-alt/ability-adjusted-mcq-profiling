@@ -14,7 +14,7 @@ The submission version is `manuscript/access.tex` → `manuscript/access.pdf`: I
 | Single-paragraph abstract, ≤ 250 words, no citations or equations | Done (`sections/abstract_ieee.tex`, 239 words) |
 | Index terms (keywords) | Done (9 terms) |
 | IEEE numeric reference style | Done (`IEEEtranN`; author–year commands map to numbers) |
-| Template class | `ieeeaccess.cls`, taken from a public copy of the IEEE Access LaTeX template. **Replace it with the current official template from template-selector.ieee.org before submission** |
+| Template class | Done: official IEEE Access LaTeX template (Overleaf zip supplied by the authors, 9 November 2026), class files unmodified. `manuscript/access_overleaf.zip` (built by `scripts/make_overleaf_bundle.py`) imports directly into Overleaf |
 | Author names, affiliations, corresponding author, funding footnote | **Placeholders**: authorship not yet agreed |
 | Biography (and photograph) for every author | **Placeholder**: to be written by each author |
 | Article processing charge (open access) | Not verified here; check the current amount on the IEEE Access website |
